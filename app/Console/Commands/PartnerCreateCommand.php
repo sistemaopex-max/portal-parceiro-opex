@@ -17,11 +17,13 @@ class PartnerCreateCommand extends Command
                             {email : E-mail de login do parceiro}
                             {category_slug : Slug da categoria (ex.: distribuidor)}
                             {--password=password : Senha inicial}
-                            {--user-name= : Nome do usuário (padrão: nome fantasia ou parte do e-mail)}
-                            {--legal-name= : Razão social (padrão: mesmo que user-name)}
-                            {--trade-name= : Nome fantasia opcional}
+                            {--user-name= : Nome do usuário (padrão: parte do e-mail)}
+                            {--razao-social= : Razão social (padrão: mesmo que user-name)}
                             {--cnpj= : CNPJ opcional}
-                            {--phone= : Telefone opcional}';
+                            {--telefone= : Telefone opcional}
+                            {--endereco= : Endereço opcional}
+                            {--cidade= : Cidade opcional}
+                            {--uf= : UF (2 letras) opcional}';
 
     protected $description = 'Cria usuário parceiro e registro da empresa vinculado à categoria.';
 
@@ -44,7 +46,8 @@ class PartnerCreateCommand extends Command
         }
 
         $userName = $this->option('user-name') ?: Str::before($email, '@');
-        $legalName = $this->option('legal-name') ?: $userName;
+        $razaoSocial = $this->option('razao-social') ?: $userName;
+        $uf = $this->option('uf') ? strtoupper((string) $this->option('uf')) : null;
 
         $user = User::query()->create([
             'name' => $userName,
@@ -56,11 +59,15 @@ class PartnerCreateCommand extends Command
 
         Partner::query()->create([
             'user_id' => $user->id,
-            'partner_category_id' => $category->id,
-            'legal_name' => $legalName,
-            'trade_name' => $this->option('trade-name') ?: null,
+            'categoria_id' => $category->id,
+            'razao_social' => $razaoSocial,
             'cnpj' => $this->option('cnpj') ?: null,
-            'phone' => $this->option('phone') ?: null,
+            'telefone' => $this->option('telefone') ?: null,
+            'endereco' => $this->option('endereco') ?: null,
+            'email' => $email,
+            'cidade' => $this->option('cidade') ?: null,
+            'uf' => $uf,
+            'ativo' => true,
         ]);
 
         $this->info("Parceiro criado: {$email} → categoria {$category->name} ({$slug}).");

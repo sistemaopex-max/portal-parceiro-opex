@@ -46,7 +46,7 @@ class PartnerCategoryControllerTest extends TestCase
         $partnerUser = User::factory()->create(['role' => User::ROLE_PARTNER]);
         Partner::factory()->create([
             'user_id' => $partnerUser->id,
-            'partner_category_id' => $category->id,
+            'categoria_id' => $category->id,
         ]);
 
         $response = $this->actingAs($admin)->delete(route('admin.partner-categories.destroy', $category));

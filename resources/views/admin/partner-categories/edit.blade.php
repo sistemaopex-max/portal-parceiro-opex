@@ -10,7 +10,7 @@
                 <form method="POST" action="{{ route('admin.partner-categories.update', $category) }}">
                     @csrf
                     @method('PUT')
-                    @include('admin.partner-categories._form', ['category' => $category])
+                    @include('admin.partner-categories._form', ['category' => $category, 'tiposDocumentoEmpresa' => $tiposDocumentoEmpresa])
                 </form>
             </div>
     </div>

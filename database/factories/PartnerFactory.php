@@ -18,11 +18,15 @@ class PartnerFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'partner_category_id' => PartnerCategory::factory(),
-            'legal_name' => fake()->company(),
-            'trade_name' => fake()->optional()->company(),
+            'categoria_id' => PartnerCategory::factory(),
+            'razao_social' => fake()->company(),
             'cnpj' => null,
-            'phone' => fake()->optional()->phoneNumber(),
+            'telefone' => fake()->optional()->phoneNumber(),
+            'endereco' => fake()->optional()->streetAddress(),
+            'email' => fake()->unique()->safeEmail(),
+            'cidade' => fake()->optional()->city(),
+            'uf' => fake()->optional()->randomElement(['SP', 'RJ', 'MG', 'PR', 'RS', 'BA', 'SC']),
+            'ativo' => true,
         ];
     }
 }

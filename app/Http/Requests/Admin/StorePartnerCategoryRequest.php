@@ -21,6 +21,8 @@ class StorePartnerCategoryRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', Rule::unique('partner_categories', 'slug')],
             'description' => ['nullable', 'string', 'max:10000'],
+            'tipo_documento_empresa_ids' => ['nullable', 'array'],
+            'tipo_documento_empresa_ids.*' => ['integer', 'exists:tipos_documento_empresa,id'],
         ];
     }
 
@@ -33,6 +35,7 @@ class StorePartnerCategoryRequest extends FormRequest
             'name' => 'nome',
             'slug' => 'slug',
             'description' => 'descrição',
+            'tipo_documento_empresa_ids' => 'tipos de documento da empresa',
         ];
     }
 }

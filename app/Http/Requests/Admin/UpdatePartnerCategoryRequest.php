@@ -29,6 +29,8 @@ class UpdatePartnerCategoryRequest extends FormRequest
                 Rule::unique('partner_categories', 'slug')->ignore($category),
             ],
             'description' => ['nullable', 'string', 'max:10000'],
+            'tipo_documento_empresa_ids' => ['nullable', 'array'],
+            'tipo_documento_empresa_ids.*' => ['integer', 'exists:tipos_documento_empresa,id'],
         ];
     }
 
@@ -41,6 +43,7 @@ class UpdatePartnerCategoryRequest extends FormRequest
             'name' => 'nome',
             'slug' => 'slug',
             'description' => 'descrição',
+            'tipo_documento_empresa_ids' => 'tipos de documento da empresa',
         ];
     }
 }

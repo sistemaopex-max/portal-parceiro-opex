@@ -9,7 +9,7 @@
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <form method="POST" action="{{ route('admin.partner-categories.store') }}">
                     @csrf
-                    @include('admin.partner-categories._form', ['category' => null])
+                    @include('admin.partner-categories._form', ['category' => null, 'tiposDocumentoEmpresa' => $tiposDocumentoEmpresa])
                 </form>
             </div>
     </div>

@@ -21,9 +21,9 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 space-y-1">
                         <h3 class="font-semibold text-gray-800">Empresa</h3>
-                        <p><span class="text-gray-600">Razão social:</span> {{ auth()->user()->partner->legal_name }}</p>
-                        @if (auth()->user()->partner->trade_name)
-                            <p><span class="text-gray-600">Fantasia:</span> {{ auth()->user()->partner->trade_name }}</p>
+                        <p><span class="text-gray-600">Razão social:</span> {{ auth()->user()->partner->razao_social }}</p>
+                        @if (auth()->user()->partner->email)
+                            <p><span class="text-gray-600">E-mail:</span> {{ auth()->user()->partner->email }}</p>
                         @endif
                         <p><span class="text-gray-600">Categoria:</span> {{ auth()->user()->partner->category->name }}</p>
                     </div>
