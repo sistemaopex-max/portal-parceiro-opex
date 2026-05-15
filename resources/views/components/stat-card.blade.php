@@ -1,12 +1,19 @@
 @props(['label', 'value', 'color' => 'blue', 'href' => null, 'sub' => null])
 
 @php
+$topBorder = match ($color) {
+    'green'  => 'border-t-2 border-green-400',
+    'red'    => 'border-t-2 border-red-400',
+    'yellow' => 'border-t-2 border-amber-400',
+    'gray'   => 'border-t-2 border-gray-300',
+    default  => 'border-t-2 border-blue-400',
+};
 $iconBg = match ($color) {
-    'green'  => 'bg-green-100 text-green-600',
-    'red'    => 'bg-red-100 text-red-600',
-    'yellow' => 'bg-amber-100 text-amber-600',
+    'green'  => 'bg-green-50 text-green-600',
+    'red'    => 'bg-red-50 text-red-600',
+    'yellow' => 'bg-amber-50 text-amber-600',
     'gray'   => 'bg-gray-100 text-gray-500',
-    default  => 'bg-blue-100 text-blue-600',
+    default  => 'bg-blue-50 text-blue-600',
 };
 $valueColor = match ($color) {
     'green'  => 'text-green-700',
@@ -15,8 +22,8 @@ $valueColor = match ($color) {
     'gray'   => 'text-gray-600',
     default  => 'text-blue-700',
 };
-$base = 'relative flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition';
-$extra = $href ? ' hover:shadow-md hover:border-gray-300 cursor-pointer' : '';
+$base = "relative flex items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-card transition-shadow {$topBorder}";
+$extra = $href ? ' hover:shadow-card-md cursor-pointer' : '';
 @endphp
 
 @if ($href)
@@ -24,16 +31,21 @@ $extra = $href ? ' hover:shadow-md hover:border-gray-300 cursor-pointer' : '';
 @else
     <div {{ $attributes->merge(['class' => $base]) }}>
 @endif
-        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg {{ $iconBg }}">
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl shadow-sm {{ $iconBg }}">
             {{ $slot }}
         </div>
-        <div class="min-w-0">
-            <p class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ $label }}</p>
-            <p class="mt-0.5 text-2xl font-bold {{ $valueColor }}">{{ $value }}</p>
+        <div class="min-w-0 flex-1">
+            <p class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">{{ $label }}</p>
+            <p class="mt-0.5 text-3xl font-black leading-none {{ $valueColor }}">{{ $value }}</p>
             @if ($sub)
-                <p class="mt-0.5 text-xs text-gray-400">{{ $sub }}</p>
+                <p class="mt-1 text-xs text-zinc-400">{{ $sub }}</p>
             @endif
         </div>
+        @if ($href)
+            <svg class="h-4 w-4 shrink-0 text-zinc-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+        @endif
 @if ($href)
     </a>
 @else

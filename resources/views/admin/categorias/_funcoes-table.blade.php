@@ -1,8 +1,8 @@
 @props(['category', 'funcoes'])
 
-<div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
-        <h3 class="text-base font-semibold text-gray-900">Funções cadastradas</h3>
+<div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-card">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 bg-white px-6 py-4">
+        <h3 class="text-base font-semibold text-zinc-900">Funções cadastradas</h3>
         <x-config-action-btn
             type="button"
             variant="primary"
@@ -13,101 +13,99 @@
         </x-config-action-btn>
     </div>
 
-    <div class="p-6">
-        @if ($funcoes->isEmpty())
-            <x-empty-state
-                title="Nenhuma função cadastrada"
-                description="Adicione funções para esta categoria e configure os documentos exigidos."
-            />
-        @else
-            <div class="overflow-x-auto -mx-6 sm:mx-0">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Nome</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Ativa</th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach ($funcoes as $funcao)
-                            @php
-                                $updateUrl = route('admin.categorias.funcoes.update', [$category, $funcao]);
-                                $destroyUrl = route('admin.categorias.funcoes.destroy', [$category, $funcao]);
-                            @endphp
-                            <tr class="transition hover:bg-gray-50">
-                                <td class="px-6 py-3 font-medium text-gray-900">{{ $funcao->nome }}</td>
-                                <td class="px-6 py-3">
+    @if ($funcoes->isEmpty())
+        <x-empty-state
+            title="Nenhuma função cadastrada"
+            description="Adicione funções para esta categoria e configure os documentos exigidos."
+        />
+    @else
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-zinc-100 text-sm">
+                <thead>
+                    <tr class="bg-zinc-50/80">
+                        <th class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Nome</th>
+                        <th class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Ativa</th>
+                        <th class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100">
+                    @foreach ($funcoes as $funcao)
+                        @php
+                            $updateUrl = route('admin.categorias.funcoes.update', [$category, $funcao]);
+                            $destroyUrl = route('admin.categorias.funcoes.destroy', [$category, $funcao]);
+                        @endphp
+                        <tr class="transition hover:bg-zinc-50">
+                            <td class="px-6 py-3.5 font-semibold text-zinc-900">{{ $funcao->nome }}</td>
+                            <td class="px-6 py-3.5">
+                                @if ($funcao->ativo)
+                                    <span class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-semibold text-green-700 ring-1 ring-green-200">Sim</span>
+                                @else
+                                    <span class="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-semibold text-zinc-500 ring-1 ring-zinc-200">Não</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-3.5 text-right">
+                                <div class="flex flex-wrap items-center justify-end gap-1.5">
+                                    <x-config-action-btn
+                                        :href="route('admin.categorias.funcoes.docs.index', [$category, $funcao])"
+                                        variant="primary"
+                                    >
+                                        Documentos
+                                    </x-config-action-btn>
+
+                                    <x-config-action-btn
+                                        :href="route('admin.categorias.funcoes.edit', [$category, $funcao])"
+                                        variant="primary"
+                                    >
+                                        Editar
+                                    </x-config-action-btn>
+
                                     @if ($funcao->ativo)
-                                        <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Sim</span>
-                                    @else
-                                        <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">Não</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-3 text-right">
-                                    <div class="flex flex-wrap items-center justify-end gap-1.5">
-                                        <x-config-action-btn
-                                            :href="route('admin.categorias.funcoes.docs.index', [$category, $funcao])"
-                                            variant="primary"
-                                        >
-                                            Documentos
-                                        </x-config-action-btn>
-
-                                        <x-config-action-btn
-                                            :href="route('admin.categorias.funcoes.edit', [$category, $funcao])"
-                                            variant="primary"
-                                        >
-                                            Editar
-                                        </x-config-action-btn>
-
-                                        @if ($funcao->ativo)
-                                            <form method="POST" action="{{ $updateUrl }}" class="inline">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="nome" value="{{ $funcao->nome }}">
-                                                <input type="hidden" name="ativo" value="0">
-                                                <x-config-action-btn type="submit" variant="danger">Inativar</x-config-action-btn>
-                                            </form>
-                                        @else
-                                            <form method="POST" action="{{ $updateUrl }}" class="inline">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="hidden" name="nome" value="{{ $funcao->nome }}">
-                                                <input type="hidden" name="ativo" value="1">
-                                                <x-config-action-btn type="submit" variant="success">Reativar</x-config-action-btn>
-                                            </form>
-                                        @endif
-
-                                        <form method="POST" action="{{ $destroyUrl }}" class="inline" onsubmit="return confirm('Excluir esta função?');">
+                                        <form method="POST" action="{{ $updateUrl }}" class="inline">
                                             @csrf
-                                            @method('DELETE')
-                                            <x-config-action-btn type="submit" variant="danger">Excluir</x-config-action-btn>
+                                            @method('PUT')
+                                            <input type="hidden" name="nome" value="{{ $funcao->nome }}">
+                                            <input type="hidden" name="ativo" value="0">
+                                            <x-config-action-btn type="submit" variant="danger">Inativar</x-config-action-btn>
                                         </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif
-    </div>
+                                    @else
+                                        <form method="POST" action="{{ $updateUrl }}" class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="nome" value="{{ $funcao->nome }}">
+                                            <input type="hidden" name="ativo" value="1">
+                                            <x-config-action-btn type="submit" variant="success">Reativar</x-config-action-btn>
+                                        </form>
+                                    @endif
+
+                                    <form method="POST" action="{{ $destroyUrl }}" class="inline" onsubmit="return confirm('Excluir esta função?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-config-action-btn type="submit" variant="danger">Excluir</x-config-action-btn>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
 </div>
 
 <x-modal name="nova-funcao" :show="$errors->has('nome') && ! old('funcao_id')" focusable>
     <form method="POST" action="{{ route('admin.categorias.funcoes.store', $category) }}" class="p-6">
         @csrf
 
-        <h2 class="text-lg font-medium text-gray-900">Nova função</h2>
-        <p class="mt-1 text-sm text-gray-600">Informe o nome da função.</p>
+        <h2 class="text-lg font-semibold text-zinc-900">Nova função</h2>
+        <p class="mt-1 text-sm text-zinc-500">Informe o nome da função.</p>
 
-        <div class="mt-4">
+        <div class="mt-5">
             <x-input-label for="nome-funcao" value="Nome da função" />
             <x-text-input
                 id="nome-funcao"
                 name="nome"
                 type="text"
-                class="block mt-1 w-full"
+                class="mt-1 block w-full"
                 :value="old('nome')"
                 placeholder="Ex.: Motorista"
                 required
