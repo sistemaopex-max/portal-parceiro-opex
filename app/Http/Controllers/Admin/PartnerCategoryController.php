@@ -6,23 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StorePartnerCategoryRequest;
 use App\Http\Requests\Admin\UpdatePartnerCategoryRequest;
 use App\Models\PartnerCategory;
-use App\Models\TipoDocumentoEmpresa;
-use App\Services\Documentos\GeradorSlots;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class PartnerCategoryController extends Controller
 {
-    public function __construct(
-        private GeradorSlots $geradorSlots,
-    ) {
+    public function __construct()
+    {
         $this->authorizeResource(PartnerCategory::class, 'partner_category');
     }
 
     public function index(): View
     {
         $categories = PartnerCategory::query()
+            ->withCount('partners')
             ->orderBy('name')
             ->paginate(15);
 
@@ -31,57 +29,52 @@ class PartnerCategoryController extends Controller
 
     public function create(): View
     {
-        $tiposDocumentoEmpresa = TipoDocumentoEmpresa::query()->orderBy('nome')->get();
-
-        return view('admin.partner-categories.create', compact('tiposDocumentoEmpresa'));
+        return view('admin.partner-categories.create');
     }
 
     public function store(StorePartnerCategoryRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $tipoIds = $validated['tipo_documento_empresa_ids'] ?? [];
-        unset($validated['tipo_documento_empresa_ids']);
-
-        $validated['slug'] = $this->resolveUniqueSlug($validated['slug'] ?? null, $validated['name']);
+        $validated['slug'] = $this->resolveUniqueSlug(null, $validated['name']);
         $validated['is_active'] = $request->boolean('is_active', true);
 
         $category = PartnerCategory::query()->create($validated);
-        $category->tiposDocumentoExigidos()->sync($tipoIds);
 
         return redirect()
-            ->route('admin.partner-categories.index')
-            ->with('status', 'Categoria criada com sucesso.');
+            ->route('admin.partner-categories.show', $category)
+            ->with('status', 'Categoria criada. Configure documentos e funções abaixo.');
+    }
+
+    public function show(PartnerCategory $partner_category): View
+    {
+        $partner_category->load([
+            'tiposDocumentoEmpresa' => fn ($q) => $q->ativos()->orderBy('nome'),
+            'funcoesFuncionario' => fn ($q) => $q->ativos()->orderBy('nome'),
+        ]);
+        $partner_category->loadCount('partners');
+
+        return view('admin.partner-categories.show', [
+            'category' => $partner_category,
+        ]);
     }
 
     public function edit(PartnerCategory $partner_category): View
     {
-        $partner_category->load('tiposDocumentoExigidos');
-        $tiposDocumentoEmpresa = TipoDocumentoEmpresa::query()->orderBy('nome')->get();
-
         return view('admin.partner-categories.edit', [
             'category' => $partner_category,
-            'tiposDocumentoEmpresa' => $tiposDocumentoEmpresa,
         ]);
     }
 
     public function update(UpdatePartnerCategoryRequest $request, PartnerCategory $partner_category): RedirectResponse
     {
         $validated = $request->validated();
-        $tipoIds = $validated['tipo_documento_empresa_ids'] ?? [];
-        unset($validated['tipo_documento_empresa_ids']);
-
-        $validated['slug'] = $this->resolveUniqueSlug($validated['slug'] ?: null, $validated['name'], $partner_category->id);
-        $validated['is_active'] = $request->boolean('is_active');
+        $validated['slug'] = $this->resolveUniqueSlug(null, $validated['name'], $partner_category->id);
 
         $partner_category->update($validated);
-        $partner_category->tiposDocumentoExigidos()->sync($tipoIds);
-
-        foreach ($partner_category->partners as $partner) {
-            $this->geradorSlots->garantirSlotsEmpresa($partner);
-        }
+        $partner_category->refresh();
 
         return redirect()
-            ->route('admin.partner-categories.index')
+            ->route('admin.partner-categories.show', $partner_category)
             ->with('status', 'Categoria atualizada com sucesso.');
     }
 
@@ -90,10 +83,9 @@ class PartnerCategoryController extends Controller
         if ($partner_category->partners()->exists()) {
             return redirect()
                 ->route('admin.partner-categories.index')
-                ->withErrors(['delete' => 'Não é possível excluir: existem parceiros vinculados a esta categoria.']);
+                ->withErrors(['delete' => 'Não posso excluir pois há empresas com a categoria associada']);
         }
 
-        $partner_category->tiposDocumentoExigidos()->detach();
         $partner_category->delete();
 
         return redirect()

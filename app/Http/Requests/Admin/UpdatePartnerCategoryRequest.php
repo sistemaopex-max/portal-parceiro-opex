@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdatePartnerCategoryRequest extends FormRequest
 {
@@ -17,20 +16,9 @@ class UpdatePartnerCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $category = $this->route('partner_category');
-
         return [
             'name' => ['required', 'string', 'max:255'],
-            'slug' => [
-                'nullable',
-                'string',
-                'max:255',
-                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
-                Rule::unique('partner_categories', 'slug')->ignore($category),
-            ],
             'description' => ['nullable', 'string', 'max:10000'],
-            'tipo_documento_empresa_ids' => ['nullable', 'array'],
-            'tipo_documento_empresa_ids.*' => ['integer', 'exists:tipos_documento_empresa,id'],
         ];
     }
 
@@ -41,9 +29,7 @@ class UpdatePartnerCategoryRequest extends FormRequest
     {
         return [
             'name' => 'nome',
-            'slug' => 'slug',
             'description' => 'descrição',
-            'tipo_documento_empresa_ids' => 'tipos de documento da empresa',
         ];
     }
 }

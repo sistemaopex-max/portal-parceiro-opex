@@ -57,9 +57,9 @@ class Funcionario extends Model
     public function refreshDocumentacaoEmDia(): void
     {
         $tipoIds = $this->funcao
-            ->tiposDocumentoExigidos()
-            ->where('tipos_documento_funcionario.ativo', true)
-            ->pluck('tipos_documento_funcionario.id');
+            ->tiposDocumentoFuncionario()
+            ->where('ativo', true)
+            ->pluck('id');
 
         if ($tipoIds->isEmpty()) {
             $this->forceFill(['documentacao_em_dia' => true])->saveQuietly();

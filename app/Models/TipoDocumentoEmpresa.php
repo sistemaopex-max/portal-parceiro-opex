@@ -5,15 +5,18 @@ namespace App\Models;
 use Database\Factories\TipoDocumentoEmpresaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TipoDocumentoEmpresa extends Model
 {
     /** @use HasFactory<TipoDocumentoEmpresaFactory> */
     use HasFactory;
+
     protected $table = 'tipos_documento_empresa';
 
     protected $fillable = [
+        'partner_category_id',
         'nome',
         'ativo',
     ];
@@ -25,14 +28,14 @@ class TipoDocumentoEmpresa extends Model
         ];
     }
 
-    public function categorias(): BelongsToMany
+    public function categoria(): BelongsTo
     {
-        return $this->belongsToMany(
-            PartnerCategory::class,
-            'categoria_tipos_documento_empresa',
-            'tipo_documento_empresa_id',
-            'partner_category_id'
-        );
+        return $this->belongsTo(PartnerCategory::class, 'partner_category_id');
+    }
+
+    public function documentos(): HasMany
+    {
+        return $this->hasMany(DocumentoEmpresa::class, 'tipo_documento_empresa_id');
     }
 
     /**

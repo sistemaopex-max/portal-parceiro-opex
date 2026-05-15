@@ -21,9 +21,8 @@ class UploadDocumentoEmpresaTest extends TestCase
     {
         Storage::fake('local');
 
-        $tipo = TipoDocumentoEmpresa::factory()->create();
         $category = PartnerCategory::factory()->create();
-        $category->tiposDocumentoExigidos()->attach($tipo->id);
+        TipoDocumentoEmpresa::factory()->create(['partner_category_id' => $category->id]);
 
         $user = User::factory()->create(['role' => User::ROLE_PARTNER]);
         $partner = Partner::factory()->create([

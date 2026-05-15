@@ -27,12 +27,13 @@ class PartnerCategoryControllerTest extends TestCase
 
         $response = $this->actingAs($admin)->post(route('admin.partner-categories.store'), [
             'name' => 'Distribuidor',
-            'slug' => 'distribuidor',
             'description' => 'Teste',
             'is_active' => '1',
         ]);
 
-        $response->assertRedirect(route('admin.partner-categories.index'));
+        $category = PartnerCategory::query()->where('slug', 'distribuidor')->first();
+        $this->assertNotNull($category);
+        $response->assertRedirect(route('admin.partner-categories.show', $category));
         $this->assertDatabaseHas('partner_categories', [
             'slug' => 'distribuidor',
             'name' => 'Distribuidor',
@@ -52,7 +53,9 @@ class PartnerCategoryControllerTest extends TestCase
         $response = $this->actingAs($admin)->delete(route('admin.partner-categories.destroy', $category));
 
         $response->assertRedirect(route('admin.partner-categories.index'));
-        $response->assertSessionHasErrors('delete');
+        $response->assertSessionHasErrors([
+            'delete' => 'Não posso excluir pois há empresas com a categoria associada',
+        ]);
         $this->assertDatabaseHas('partner_categories', ['id' => $category->id]);
     }
 }

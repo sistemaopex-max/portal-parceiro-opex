@@ -10,7 +10,9 @@ use App\Models\Partner;
 use App\Services\Documentos\GeradorSlots;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PartnerDocumentoFuncionarioController extends Controller
 {
@@ -27,11 +29,30 @@ class PartnerDocumentoFuncionarioController extends Controller
         $this->geradorSlots->garantirSlotsFuncionario($funcionario);
 
         $documentos = $funcionario->documentos()
+            ->doTipoAtivo()
             ->with(['tipo', 'validadoPor'])
             ->orderBy('id')
             ->get();
 
         return view('admin.partners.documentos-funcionario.index', compact('partner', 'funcionario', 'documentos'));
+    }
+
+    public function download(DocumentoFuncionario $documento_funcionario): StreamedResponse
+    {
+        $this->authorize('download', $documento_funcionario);
+
+        abort_if($documento_funcionario->arquivo_caminho === null || $documento_funcionario->arquivo_disco === null, 404);
+
+        abort_unless(
+            Storage::disk($documento_funcionario->arquivo_disco)->exists($documento_funcionario->arquivo_caminho),
+            404,
+            'Arquivo não encontrado no armazenamento.'
+        );
+
+        return Storage::disk($documento_funcionario->arquivo_disco)->download(
+            $documento_funcionario->arquivo_caminho,
+            $documento_funcionario->arquivo_nome_original ?? 'documento'
+        );
     }
 
     public function validar(ValidarDocumentoFuncionarioRequest $request, DocumentoFuncionario $documento_funcionario): RedirectResponse

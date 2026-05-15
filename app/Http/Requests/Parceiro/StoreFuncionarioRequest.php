@@ -26,11 +26,18 @@ class StoreFuncionarioRequest extends FormRequest
      */
     public function rules(): array
     {
-        $parceiroId = $this->user()->partner->id;
+        $partner = $this->user()->partner;
+        $parceiroId = $partner->id;
+        $categoriaId = $partner->categoria_id;
 
         return [
             'nome' => ['required', 'string', 'max:255'],
-            'funcao_funcionario_id' => ['required', Rule::exists('funcoes_funcionario', 'id')->where(fn ($q) => $q->where('ativo', true))],
+            'funcao_funcionario_id' => [
+                'required',
+                Rule::exists('funcoes_funcionario', 'id')->where(fn ($q) => $q
+                    ->where('ativo', true)
+                    ->where('partner_category_id', $categoriaId)),
+            ],
             'cpf' => [
                 'required',
                 'string',

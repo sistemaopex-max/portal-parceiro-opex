@@ -18,7 +18,7 @@
         <div
             class="flex min-h-screen flex-col bg-slate-50 text-gray-900 lg:flex-row"
             x-data="{ sidebarOpen: false, partnersOpen: false }"
-            @if (request()->routeIs('admin.parceiros.*', 'admin.partner-categories.*') && auth()->check() && auth()->user()->isBackOffice())
+            @if (request()->routeIs('admin.parceiros.*', 'admin.partner-categories.*', 'admin.documentos-empresa.*', 'admin.documentos-funcionario.*') && auth()->check() && auth()->user()->isBackOffice())
                 x-init="partnersOpen = true"
             @endif
             @keydown.window.escape="sidebarOpen = false; partnersOpen = false"

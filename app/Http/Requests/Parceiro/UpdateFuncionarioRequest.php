@@ -33,10 +33,16 @@ class UpdateFuncionarioRequest extends FormRequest
         /** @var Funcionario $funcionario */
         $funcionario = $this->route('funcionario');
         $parceiroId = $funcionario->parceiro_id;
+        $categoriaId = $funcionario->parceiro->categoria_id;
 
         return [
             'nome' => ['required', 'string', 'max:255'],
-            'funcao_funcionario_id' => ['required', Rule::exists('funcoes_funcionario', 'id')->where(fn ($q) => $q->where('ativo', true))],
+            'funcao_funcionario_id' => [
+                'required',
+                Rule::exists('funcoes_funcionario', 'id')->where(fn ($q) => $q
+                    ->where('ativo', true)
+                    ->where('partner_category_id', $categoriaId)),
+            ],
             'cpf' => [
                 'required',
                 'string',

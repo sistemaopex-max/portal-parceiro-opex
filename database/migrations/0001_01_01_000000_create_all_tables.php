@@ -92,15 +92,12 @@ return new class extends Migration
 
         Schema::create('tipos_documento_empresa', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('partner_category_id')->constrained('partner_categories')->cascadeOnDelete();
             $table->string('nome');
             $table->boolean('ativo')->default(true);
             $table->timestamps();
-        });
 
-        Schema::create('categoria_tipos_documento_empresa', function (Blueprint $table) {
-            $table->foreignId('partner_category_id')->constrained('partner_categories')->cascadeOnDelete();
-            $table->foreignId('tipo_documento_empresa_id')->constrained('tipos_documento_empresa')->cascadeOnDelete();
-            $table->primary(['partner_category_id', 'tipo_documento_empresa_id']);
+            $table->unique(['partner_category_id', 'nome']);
         });
 
         Schema::create('partners', function (Blueprint $table) {
@@ -122,6 +119,7 @@ return new class extends Migration
 
         Schema::create('funcoes_funcionario', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('partner_category_id')->constrained('partner_categories')->cascadeOnDelete();
             $table->string('nome');
             $table->boolean('ativo')->default(true);
             $table->timestamps();
@@ -129,15 +127,12 @@ return new class extends Migration
 
         Schema::create('tipos_documento_funcionario', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('funcao_funcionario_id')->constrained('funcoes_funcionario')->cascadeOnDelete();
             $table->string('nome');
             $table->boolean('ativo')->default(true);
             $table->timestamps();
-        });
 
-        Schema::create('funcao_tipos_documento_funcionario', function (Blueprint $table) {
-            $table->foreignId('funcao_funcionario_id')->constrained('funcoes_funcionario')->cascadeOnDelete();
-            $table->foreignId('tipo_documento_funcionario_id')->constrained('tipos_documento_funcionario')->cascadeOnDelete();
-            $table->primary(['funcao_funcionario_id', 'tipo_documento_funcionario_id']);
+            $table->unique(['funcao_funcionario_id', 'nome']);
         });
 
         Schema::create('funcionarios', function (Blueprint $table) {
@@ -199,11 +194,9 @@ return new class extends Migration
         Schema::dropIfExists('documentos_funcionario');
         Schema::dropIfExists('documentos_empresa');
         Schema::dropIfExists('funcionarios');
-        Schema::dropIfExists('funcao_tipos_documento_funcionario');
         Schema::dropIfExists('tipos_documento_funcionario');
         Schema::dropIfExists('funcoes_funcionario');
         Schema::dropIfExists('partners');
-        Schema::dropIfExists('categoria_tipos_documento_empresa');
         Schema::dropIfExists('tipos_documento_empresa');
         Schema::dropIfExists('partner_categories');
         Schema::dropIfExists('failed_jobs');

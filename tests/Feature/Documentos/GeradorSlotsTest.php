@@ -15,9 +15,11 @@ class GeradorSlotsTest extends TestCase
 
     public function test_slots_empresa_are_created_when_partner_is_created_with_category_requirements(): void
     {
-        $tipo = TipoDocumentoEmpresa::factory()->create(['nome' => 'Contrato']);
         $category = PartnerCategory::factory()->create();
-        $category->tiposDocumentoExigidos()->attach($tipo->id);
+        $tipo = TipoDocumentoEmpresa::factory()->create([
+            'partner_category_id' => $category->id,
+            'nome' => 'Contrato',
+        ]);
 
         $user = User::factory()->create(['role' => User::ROLE_PARTNER]);
         $partner = Partner::factory()->create([

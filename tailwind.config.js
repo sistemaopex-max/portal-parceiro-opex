@@ -9,6 +9,15 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    safelist: [
+        'bg-green-600',
+        'hover:bg-green-500',
+        'focus:ring-green-500',
+        '!bg-green-600',
+        'hover:!bg-green-500',
+        'focus:!ring-green-500',
+    ],
+
     theme: {
         extend: {
             colors: {

@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\Admin\FuncaoFuncionarioController;
+use App\Http\Controllers\Admin\CategoryDocumentoEmpresaController;
+use App\Http\Controllers\Admin\CategoryDocumentoFuncionarioController;
+use App\Http\Controllers\Admin\CategoryFuncaoController;
 use App\Http\Controllers\Admin\PartnerCategoryController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PartnerDocumentoEmpresaController;
 use App\Http\Controllers\Admin\PartnerDocumentoFuncionarioController;
-use App\Http\Controllers\Admin\TipoDocumentoEmpresaController;
-use App\Http\Controllers\Admin\TipoDocumentoFuncionarioController;
 use App\Http\Controllers\Parceiro\EmpresaDocumentoController;
 use App\Http\Controllers\Parceiro\FuncionarioController;
 use App\Http\Controllers\Parceiro\FuncionarioDocumentoController;
@@ -22,19 +22,38 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         return view('admin.dashboard');
     })->name('dashboard');
 
-    Route::resource('partner-categories', PartnerCategoryController::class)->except(['show']);
+    Route::resource('partner-categories', PartnerCategoryController::class);
 
-    Route::resource('tipos-documento-empresa', TipoDocumentoEmpresaController::class)
-        ->parameters(['tipos-documento-empresa' => 'tipo_documento_empresa'])
-        ->except(['show']);
+    Route::prefix('partner-categories/{partner_category}')->name('partner-categories.')->group(function () {
+        Route::get('documentos-empresa', [CategoryDocumentoEmpresaController::class, 'index'])
+            ->name('documentos-empresa.index');
+        Route::post('documentos-empresa', [CategoryDocumentoEmpresaController::class, 'store'])
+            ->name('documentos-empresa.store');
+        Route::put('documentos-empresa/{tipo_documento_empresa}', [CategoryDocumentoEmpresaController::class, 'update'])
+            ->name('documentos-empresa.update');
+        Route::delete('documentos-empresa/{tipo_documento_empresa}', [CategoryDocumentoEmpresaController::class, 'destroy'])
+            ->name('documentos-empresa.destroy');
 
-    Route::resource('tipos-documento-funcionario', TipoDocumentoFuncionarioController::class)
-        ->parameters(['tipos-documento-funcionario' => 'tipo_documento_funcionario'])
-        ->except(['show']);
+        Route::get('funcoes', [CategoryFuncaoController::class, 'index'])
+            ->name('funcoes.index');
+        Route::post('funcoes', [CategoryFuncaoController::class, 'store'])
+            ->name('funcoes.store');
+        Route::get('funcoes/{funcao}/edit', [CategoryFuncaoController::class, 'edit'])
+            ->name('funcoes.edit');
+        Route::put('funcoes/{funcao}', [CategoryFuncaoController::class, 'update'])
+            ->name('funcoes.update');
+        Route::delete('funcoes/{funcao}', [CategoryFuncaoController::class, 'destroy'])
+            ->name('funcoes.destroy');
 
-    Route::resource('funcoes-funcionario', FuncaoFuncionarioController::class)
-        ->parameters(['funcoes-funcionario' => 'funcao_funcionario'])
-        ->except(['show']);
+        Route::get('funcoes/{funcao}/documentos', [CategoryDocumentoFuncionarioController::class, 'index'])
+            ->name('funcoes.documentos.index');
+        Route::post('funcoes/{funcao}/documentos', [CategoryDocumentoFuncionarioController::class, 'store'])
+            ->name('funcoes.documentos.store');
+        Route::put('funcoes/{funcao}/documentos/{tipo_documento_funcionario}', [CategoryDocumentoFuncionarioController::class, 'update'])
+            ->name('funcoes.documentos.update');
+        Route::delete('funcoes/{funcao}/documentos/{tipo_documento_funcionario}', [CategoryDocumentoFuncionarioController::class, 'destroy'])
+            ->name('funcoes.documentos.destroy');
+    });
 
     Route::resource('parceiros', PartnerController::class)
         ->except(['show', 'create', 'store'])
@@ -43,11 +62,17 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('parceiros/{partner}/documentos-empresa', [PartnerDocumentoEmpresaController::class, 'index'])
         ->name('parceiros.documentos-empresa.index');
 
+    Route::get('documentos-empresa/{documento_empresa}/download', [PartnerDocumentoEmpresaController::class, 'download'])
+        ->name('documentos-empresa.download');
+
     Route::post('documentos-empresa/{documento_empresa}/validar', [PartnerDocumentoEmpresaController::class, 'validar'])
         ->name('documentos-empresa.validar');
 
     Route::get('parceiros/{partner}/funcionarios/{funcionario}/documentos-funcionario', [PartnerDocumentoFuncionarioController::class, 'index'])
         ->name('parceiros.funcionarios.documentos-funcionario.index');
+
+    Route::get('documentos-funcionario/{documento_funcionario}/download', [PartnerDocumentoFuncionarioController::class, 'download'])
+        ->name('documentos-funcionario.download');
 
     Route::post('documentos-funcionario/{documento_funcionario}/validar', [PartnerDocumentoFuncionarioController::class, 'validar'])
         ->name('documentos-funcionario.validar');

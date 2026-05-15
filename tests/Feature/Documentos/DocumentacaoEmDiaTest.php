@@ -19,11 +19,10 @@ class DocumentacaoEmDiaTest extends TestCase
 
     public function test_documentacao_em_dia_true_when_all_required_documents_are_valid(): void
     {
-        $tipo = TipoDocumentoFuncionario::factory()->create();
-        $funcao = FuncaoFuncionario::factory()->create();
-        $funcao->tiposDocumentoExigidos()->attach($tipo->id);
-
         $category = PartnerCategory::factory()->create();
+        $funcao = FuncaoFuncionario::factory()->create(['partner_category_id' => $category->id]);
+        TipoDocumentoFuncionario::factory()->create(['funcao_funcionario_id' => $funcao->id]);
+
         $user = User::factory()->create(['role' => User::ROLE_PARTNER]);
         $partner = Partner::factory()->create([
             'user_id' => $user->id,

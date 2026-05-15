@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\FuncaoFuncionario;
 use App\Models\TipoDocumentoFuncionario;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,6 +16,7 @@ class TipoDocumentoFuncionarioFactory extends Factory
     public function definition(): array
     {
         return [
+            'funcao_funcionario_id' => FuncaoFuncionario::factory(),
             'nome' => fake()->unique()->words(3, true),
             'ativo' => true,
         ];

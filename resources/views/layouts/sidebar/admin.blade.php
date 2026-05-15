@@ -1,5 +1,16 @@
 @php
     $homeUrl = route('admin.dashboard');
+    $categoriesUrl = route('admin.partner-categories.index');
+    $partnersUrl = route('admin.parceiros.index');
+    $partnersMenuActive = request()->routeIs(
+        'admin.parceiros.*',
+        'admin.partner-categories.*',
+        'admin.documentos-empresa.*',
+        'admin.documentos-funcionario.*',
+    );
+    $partnersBtn = $partnersMenuActive
+        ? 'bg-white/15 text-white shadow-sm ring-1 ring-inset ring-white/20'
+        : 'text-white/90 hover:bg-white/10 hover:text-white';
 @endphp
 
 <div class="flex h-full min-h-0 flex-col text-white">
@@ -17,20 +28,6 @@
             <span>Início</span>
         </x-sidebar-link>
 
-        @php
-            $partnersActive = request()->routeIs(
-                'admin.parceiros.*',
-                'admin.partner-categories.*',
-                'admin.tipos-documento-empresa.*',
-                'admin.tipos-documento-funcionario.*',
-                'admin.funcoes-funcionario.*',
-                'admin.documentos-empresa.*',
-                'admin.documentos-funcionario.*',
-            );
-            $partnersBtn = $partnersActive
-                ? 'bg-white/15 text-white shadow-sm ring-1 ring-inset ring-white/20'
-                : 'text-white/90 hover:bg-white/10 hover:text-white';
-        @endphp
         <div class="space-y-0.5" @click.outside="partnersOpen = false">
             <button
                 type="button"
@@ -47,14 +44,7 @@
                     x-bind:style="{ transform: partnersOpen ? 'rotate(180deg)' : 'rotate(0deg)' }"
                     aria-hidden="true"
                 >
-                    <svg
-                        class="h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                    >
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                     </svg>
                 </span>
@@ -66,30 +56,15 @@
                 class="mt-0.5 space-y-0.5 border-l border-white/25 py-1 ps-3 ms-3"
             >
                 <a
-                    href="{{ route('admin.parceiros.index') }}"
-                    class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.parceiros.index', 'admin.parceiros.edit') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
+                    href="{{ $partnersUrl }}"
+                    class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.parceiros.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
                     @click="sidebarOpen = false; partnersOpen = false"
                 >Gerenciar</a>
                 <a
-                    href="{{ route('admin.partner-categories.index') }}"
+                    href="{{ $categoriesUrl }}"
                     class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.partner-categories.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
                     @click="sidebarOpen = false; partnersOpen = false"
                 >Categorias</a>
-                <a
-                    href="{{ route('admin.tipos-documento-empresa.index') }}"
-                    class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.tipos-documento-empresa.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
-                    @click="sidebarOpen = false; partnersOpen = false"
-                >Tipos doc. empresa</a>
-                <a
-                    href="{{ route('admin.tipos-documento-funcionario.index') }}"
-                    class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.tipos-documento-funcionario.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
-                    @click="sidebarOpen = false; partnersOpen = false"
-                >Tipos doc. funcionário</a>
-                <a
-                    href="{{ route('admin.funcoes-funcionario.index') }}"
-                    class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.funcoes-funcionario.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
-                    @click="sidebarOpen = false; partnersOpen = false"
-                >Funções</a>
             </div>
         </div>
     </nav>

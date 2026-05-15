@@ -48,6 +48,15 @@ class DocumentoFuncionario extends Model
         return $this->belongsTo(TipoDocumentoFuncionario::class, 'tipo_documento_funcionario_id');
     }
 
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder<DocumentoFuncionario>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<DocumentoFuncionario>
+     */
+    public function scopeDoTipoAtivo($query)
+    {
+        return $query->whereHas('tipo', fn ($q) => $q->where('ativo', true));
+    }
+
     public function validadoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'validado_por_id');

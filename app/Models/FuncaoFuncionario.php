@@ -5,16 +5,18 @@ namespace App\Models;
 use Database\Factories\FuncaoFuncionarioFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FuncaoFuncionario extends Model
 {
     /** @use HasFactory<FuncaoFuncionarioFactory> */
     use HasFactory;
+
     protected $table = 'funcoes_funcionario';
 
     protected $fillable = [
+        'partner_category_id',
         'nome',
         'ativo',
     ];
@@ -26,14 +28,14 @@ class FuncaoFuncionario extends Model
         ];
     }
 
-    public function tiposDocumentoExigidos(): BelongsToMany
+    public function categoria(): BelongsTo
     {
-        return $this->belongsToMany(
-            TipoDocumentoFuncionario::class,
-            'funcao_tipos_documento_funcionario',
-            'funcao_funcionario_id',
-            'tipo_documento_funcionario_id'
-        );
+        return $this->belongsTo(PartnerCategory::class, 'partner_category_id');
+    }
+
+    public function tiposDocumentoFuncionario(): HasMany
+    {
+        return $this->hasMany(TipoDocumentoFuncionario::class, 'funcao_funcionario_id');
     }
 
     public function funcionarios(): HasMany

@@ -27,6 +27,7 @@ class EmpresaDocumentoController extends Controller
         $this->geradorSlots->garantirSlotsEmpresa($partner);
 
         $documentos = $partner->documentosEmpresa()
+            ->doTipoAtivo()
             ->with('tipo')
             ->orderBy('id')
             ->get();

@@ -9,7 +9,9 @@ use App\Models\Partner;
 use App\Services\Documentos\GeradorSlots;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PartnerDocumentoEmpresaController extends Controller
 {
@@ -24,11 +26,30 @@ class PartnerDocumentoEmpresaController extends Controller
         $this->geradorSlots->garantirSlotsEmpresa($partner);
 
         $documentos = $partner->documentosEmpresa()
+            ->doTipoAtivo()
             ->with(['tipo', 'validadoPor'])
             ->orderBy('id')
             ->get();
 
         return view('admin.partners.documentos-empresa.index', compact('partner', 'documentos'));
+    }
+
+    public function download(DocumentoEmpresa $documento_empresa): StreamedResponse
+    {
+        $this->authorize('download', $documento_empresa);
+
+        abort_if($documento_empresa->arquivo_caminho === null || $documento_empresa->arquivo_disco === null, 404);
+
+        abort_unless(
+            Storage::disk($documento_empresa->arquivo_disco)->exists($documento_empresa->arquivo_caminho),
+            404,
+            'Arquivo não encontrado no armazenamento.'
+        );
+
+        return Storage::disk($documento_empresa->arquivo_disco)->download(
+            $documento_empresa->arquivo_caminho,
+            $documento_empresa->arquivo_nome_original ?? 'documento'
+        );
     }
 
     public function validar(ValidarDocumentoEmpresaRequest $request, DocumentoEmpresa $documento_empresa): RedirectResponse

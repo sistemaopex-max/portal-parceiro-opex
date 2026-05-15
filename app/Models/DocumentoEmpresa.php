@@ -48,6 +48,15 @@ class DocumentoEmpresa extends Model
         return $this->belongsTo(TipoDocumentoEmpresa::class, 'tipo_documento_empresa_id');
     }
 
+    /**
+     * @param  \Illuminate\Database\Eloquent\Builder<DocumentoEmpresa>  $query
+     * @return \Illuminate\Database\Eloquent\Builder<DocumentoEmpresa>
+     */
+    public function scopeDoTipoAtivo($query)
+    {
+        return $query->whereHas('tipo', fn ($q) => $q->where('ativo', true));
+    }
+
     public function validadoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'validado_por_id');

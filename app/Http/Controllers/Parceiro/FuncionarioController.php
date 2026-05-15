@@ -37,7 +37,11 @@ class FuncionarioController extends Controller
         $partner = auth()->user()->partner;
         abort_if($partner === null, 404);
 
-        $funcoes = FuncaoFuncionario::query()->where('ativo', true)->orderBy('nome')->get();
+        $funcoes = FuncaoFuncionario::query()
+            ->where('partner_category_id', $partner->categoria_id)
+            ->where('ativo', true)
+            ->orderBy('nome')
+            ->get();
 
         return view('parceiro.funcionarios.create', compact('partner', 'funcoes'));
     }
@@ -61,7 +65,14 @@ class FuncionarioController extends Controller
         $partner = auth()->user()->partner;
         abort_if($partner === null || $funcionario->parceiro_id !== $partner->id, 404);
 
-        $funcoes = FuncaoFuncionario::query()->where('ativo', true)->orderBy('nome')->get();
+        $funcoes = FuncaoFuncionario::query()
+            ->where('partner_category_id', $partner->categoria_id)
+            ->where(function ($query) use ($funcionario) {
+                $query->ativos()
+                    ->orWhere('id', $funcionario->funcao_funcionario_id);
+            })
+            ->orderBy('nome')
+            ->get();
 
         return view('parceiro.funcionarios.edit', compact('partner', 'funcionario', 'funcoes'));
     }

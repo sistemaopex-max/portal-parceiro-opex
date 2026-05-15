@@ -9,14 +9,17 @@ use App\Models\PartnerCategory;
 use App\Models\TipoDocumentoEmpresa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class ValidarDocumentoEmpresaTest extends TestCase
+class AdminDownloadDocumentoEmpresaTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_can_mark_document_as_valid(): void
+    public function test_admin_can_download_partner_company_document(): void
     {
+        Storage::fake('local');
+
         $category = PartnerCategory::factory()->create();
         TipoDocumentoEmpresa::factory()->create(['partner_category_id' => $category->id]);
 
@@ -28,27 +31,23 @@ class ValidarDocumentoEmpresaTest extends TestCase
 
         /** @var DocumentoEmpresa $doc */
         $doc = $partner->documentosEmpresa()->firstOrFail();
+        $path = "parceiros/{$partner->id}/empresa/{$doc->id}/test.pdf";
+        Storage::disk('local')->put($path, 'conteudo-teste');
+
         $doc->update([
             'arquivo_disco' => 'local',
-            'arquivo_caminho' => 'parceiros/'.$partner->id.'/empresa/'.$doc->id.'/x.pdf',
-            'arquivo_nome_original' => 'x.pdf',
+            'arquivo_caminho' => $path,
+            'arquivo_nome_original' => 'contrato.pdf',
             'arquivo_mime' => 'application/pdf',
-            'arquivo_tamanho' => 100,
+            'arquivo_tamanho' => 14,
             'status' => StatusDocumento::Pendente,
         ]);
 
         $admin = User::factory()->admin()->create();
-        $validade = now()->addMonth()->toDateString();
 
-        $response = $this->actingAs($admin)->post(route('admin.documentos-empresa.validar', $doc), [
-            'decisao' => 'valido',
-            'validade' => $validade,
-        ]);
+        $response = $this->actingAs($admin)->get(route('admin.documentos-empresa.download', $doc));
 
-        $response->assertRedirect(route('admin.parceiros.documentos-empresa.index', $partner));
-        $doc->refresh();
-        $this->assertSame(StatusDocumento::Valido, $doc->status);
-        $this->assertSame($validade, $doc->validade->toDateString());
-        $this->assertSame($admin->id, $doc->validado_por_id);
+        $response->assertOk();
+        $response->assertDownload('contrato.pdf');
     }
 }

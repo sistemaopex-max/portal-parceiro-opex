@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\FuncaoFuncionario;
+use App\Models\PartnerCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -15,6 +16,7 @@ class FuncaoFuncionarioFactory extends Factory
     public function definition(): array
     {
         return [
+            'partner_category_id' => PartnerCategory::factory(),
             'nome' => fake()->unique()->jobTitle(),
             'ativo' => true,
         ];

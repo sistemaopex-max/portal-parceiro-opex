@@ -5,15 +5,18 @@ namespace App\Models;
 use Database\Factories\TipoDocumentoFuncionarioFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TipoDocumentoFuncionario extends Model
 {
     /** @use HasFactory<TipoDocumentoFuncionarioFactory> */
     use HasFactory;
+
     protected $table = 'tipos_documento_funcionario';
 
     protected $fillable = [
+        'funcao_funcionario_id',
         'nome',
         'ativo',
     ];
@@ -25,14 +28,14 @@ class TipoDocumentoFuncionario extends Model
         ];
     }
 
-    public function funcoes(): BelongsToMany
+    public function funcao(): BelongsTo
     {
-        return $this->belongsToMany(
-            FuncaoFuncionario::class,
-            'funcao_tipos_documento_funcionario',
-            'tipo_documento_funcionario_id',
-            'funcao_funcionario_id'
-        );
+        return $this->belongsTo(FuncaoFuncionario::class, 'funcao_funcionario_id');
+    }
+
+    public function documentos(): HasMany
+    {
+        return $this->hasMany(DocumentoFuncionario::class, 'tipo_documento_funcionario_id');
     }
 
     /**

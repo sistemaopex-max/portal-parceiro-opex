@@ -19,9 +19,9 @@ class GeradorSlots
         }
 
         $tipos = $partner->category
-            ->tiposDocumentoExigidos()
-            ->where('tipos_documento_empresa.ativo', true)
-            ->pluck('tipos_documento_empresa.id');
+            ->tiposDocumentoEmpresa()
+            ->where('ativo', true)
+            ->pluck('id');
 
         foreach ($tipos as $tipoId) {
             DocumentoEmpresa::query()->firstOrCreate(
@@ -45,9 +45,9 @@ class GeradorSlots
         }
 
         $tipos = $funcionario->funcao
-            ->tiposDocumentoExigidos()
-            ->where('tipos_documento_funcionario.ativo', true)
-            ->pluck('tipos_documento_funcionario.id');
+            ->tiposDocumentoFuncionario()
+            ->where('ativo', true)
+            ->pluck('id');
 
         foreach ($tipos as $tipoId) {
             DocumentoFuncionario::query()->firstOrCreate(

@@ -28,6 +28,7 @@ class FuncionarioDocumentoController extends Controller
         $this->geradorSlots->garantirSlotsFuncionario($funcionario);
 
         $documentos = $funcionario->documentos()
+            ->doTipoAtivo()
             ->with('tipo')
             ->orderBy('id')
             ->get();
