@@ -70,7 +70,7 @@ class ParceiroDocumentoFuncionarioController extends Controller
         $funcionario = $documento_funcionario->funcionario()->with('parceiro')->firstOrFail();
 
         return redirect()
-            ->route('admin.parceiros.funcionarios.documentos.index', [$funcionario->parceiro, $funcionario])
+            ->route('admin.parceiros.funcionarios.docs.index', [$funcionario->parceiro, $funcionario])
             ->with('status', 'Documento atualizado.');
     }
 }

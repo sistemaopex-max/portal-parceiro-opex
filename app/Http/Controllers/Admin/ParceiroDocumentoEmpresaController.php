@@ -65,7 +65,7 @@ class ParceiroDocumentoEmpresaController extends Controller
         }
 
         return redirect()
-            ->route('admin.parceiros.documentos-empresa.index', $documento_empresa->parceiro)
+            ->route('admin.parceiros.docs.index', $documento_empresa->parceiro)
             ->with('status', 'Documento atualizado.');
     }
 }

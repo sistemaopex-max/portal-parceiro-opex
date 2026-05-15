@@ -30,7 +30,7 @@
                                 <td class="py-3 pe-4">
                                     @if ($doc->arquivo_caminho)
                                         <a
-                                            href="{{ route('admin.documentos-empresa.download', $doc) }}"
+                                            href="{{ route('admin.docs.download', $doc) }}"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             class="text-indigo-600 hover:text-indigo-900 font-medium"
@@ -43,7 +43,7 @@
                                 </td>
                                 <td class="py-3 pe-4">
                                     @if ($doc->arquivo_caminho)
-                                        <form method="POST" action="{{ route('admin.documentos-empresa.validar', $doc) }}" class="space-y-2 max-w-xs">
+                                        <form method="POST" action="{{ route('admin.docs.validar', $doc) }}" class="space-y-2 max-w-xs">
                                             <p class="text-xs text-gray-500 mb-2">Abra o arquivo na coluna <strong>Arquivo</strong> antes de validar.</p>
                                             @csrf
                                             <div>

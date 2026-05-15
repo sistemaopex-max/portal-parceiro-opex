@@ -6,8 +6,8 @@
     $partnersMenuActive = request()->routeIs(
         'admin.parceiros.*',
         'admin.categorias.*',
-        'admin.documentos-empresa.*',
-        'admin.documentos-funcionario.*',
+        'admin.docs.*',
+        'admin.docs-func.*',
         'admin.invitations.*',
     );
     $partnersBtn = $partnersMenuActive

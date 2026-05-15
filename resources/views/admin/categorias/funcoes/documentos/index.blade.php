@@ -16,7 +16,7 @@
         @include('admin.categorias._tipo-documento-table', [
             'tipos' => $tipos,
             'category' => $category,
-            'routeBase' => 'admin.categorias.funcoes.documentos',
+            'routeBase' => 'admin.categorias.funcoes.docs',
             'routeParams' => [$category, $funcao],
             'modalPrefix' => 'documento-funcionario-'.$funcao->id,
         ])

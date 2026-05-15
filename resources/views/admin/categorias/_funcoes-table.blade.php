@@ -38,7 +38,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <x-config-action-btn
-                                        :href="route('admin.categorias.funcoes.documentos.index', [$category, $funcao])"
+                                        :href="route('admin.categorias.funcoes.docs.index', [$category, $funcao])"
                                         variant="primary"
                                     >
                                         Documentos

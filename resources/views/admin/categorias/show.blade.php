@@ -70,7 +70,7 @@
 
             <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 flex flex-wrap gap-2">
                 <x-config-action-btn
-                    :href="route('admin.categorias.documentos-empresa.index', $category)"
+                    :href="route('admin.categorias.docs.index', $category)"
                     variant="primary"
                 >
                     Gerenciar documentos

@@ -47,7 +47,7 @@ class EmpresaDocumentoController extends Controller
         );
 
         return redirect()
-            ->route('parceiro.empresa.documentos.index')
+            ->route('parceiro.docs.index')
             ->with('status', 'Documento enviado e aguardando validação.');
     }
 

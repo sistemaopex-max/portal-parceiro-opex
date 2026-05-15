@@ -45,7 +45,7 @@
                                     </td>
                                     <td class="py-2.5 pe-4">
                                         <div class="flex items-center gap-2 flex-wrap">
-                                            <x-config-action-btn :href="route('parceiro.funcionarios.documentos.index', $f)" variant="primary">Documentos</x-config-action-btn>
+                                            <x-config-action-btn :href="route('parceiro.funcionarios.docs.index', $f)" variant="primary">Documentos</x-config-action-btn>
                                             <x-config-action-btn :href="route('parceiro.funcionarios.edit', $f)" variant="primary">Editar</x-config-action-btn>
                                             <form action="{{ route('parceiro.funcionarios.destroy', $f) }}" method="POST" class="inline" onsubmit="return confirm('Remover este funcionário?');">
                                                 @csrf @method('DELETE')

@@ -14,7 +14,7 @@
         @include('admin.categorias._tipo-documento-table', [
             'tipos' => $tipos,
             'category' => $category,
-            'routeBase' => 'admin.categorias.documentos-empresa',
+            'routeBase' => 'admin.categorias.docs',
             'routeParams' => [$category],
             'modalPrefix' => 'documento-empresa',
         ])

@@ -95,6 +95,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('categoria_id')->constrained('categorias_parceiro')->cascadeOnDelete();
             $table->string('nome');
+            $table->string('slug')->unique();
             $table->boolean('ativo')->default(true);
             $table->timestamp('criado_em')->useCurrent();
             $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();
@@ -123,15 +124,19 @@ return new class extends Migration
             $table->id();
             $table->foreignId('categoria_id')->constrained('categorias_parceiro')->cascadeOnDelete();
             $table->string('nome');
+            $table->string('slug')->unique();
             $table->boolean('ativo')->default(true);
             $table->timestamp('criado_em')->useCurrent();
             $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();
+
+            $table->unique(['categoria_id', 'nome']);
         });
 
         Schema::create('tipos_documento_funcionario', function (Blueprint $table) {
             $table->id();
             $table->foreignId('funcao_funcionario_id')->constrained('funcoes_funcionario')->cascadeOnDelete();
             $table->string('nome');
+            $table->string('slug')->unique();
             $table->boolean('ativo')->default(true);
             $table->timestamp('criado_em')->useCurrent();
             $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();

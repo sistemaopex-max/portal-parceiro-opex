@@ -49,7 +49,7 @@
                                         <td class="py-2.5 pe-4">
                                             @if ($doc->arquivo_caminho)
                                                 <x-config-action-btn
-                                                    :href="route('admin.documentos-empresa.download', $doc)"
+                                                    :href="route('admin.docs.download', $doc)"
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     variant="primary"
@@ -102,7 +102,7 @@
                                         </td>
                                         <td class="py-2.5 pe-4">
                                             <x-config-action-btn
-                                                :href="route('admin.parceiros.funcionarios.documentos.index', [$partner, $funcionario])"
+                                                :href="route('admin.parceiros.funcionarios.docs.index', [$partner, $funcionario])"
                                                 variant="primary"
                                             >
                                                 Visualizar documentos

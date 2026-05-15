@@ -33,15 +33,17 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         ->parameters(['categorias' => 'partner_category']);
 
     Route::prefix('categorias/{partner_category}')->name('categorias.')->group(function () {
-        Route::get('documentos-empresa', [CategoriaDocumentoEmpresaController::class, 'index'])
-            ->name('documentos-empresa.index');
-        Route::post('documentos-empresa', [CategoriaDocumentoEmpresaController::class, 'store'])
-            ->name('documentos-empresa.store');
-        Route::put('documentos-empresa/{tipo_documento_empresa}', [CategoriaDocumentoEmpresaController::class, 'update'])
-            ->name('documentos-empresa.update');
-        Route::delete('documentos-empresa/{tipo_documento_empresa}', [CategoriaDocumentoEmpresaController::class, 'destroy'])
-            ->name('documentos-empresa.destroy');
+        // Tipos de documento da empresa (na categoria)
+        Route::get('docs', [CategoriaDocumentoEmpresaController::class, 'index'])
+            ->name('docs.index');
+        Route::post('docs', [CategoriaDocumentoEmpresaController::class, 'store'])
+            ->name('docs.store');
+        Route::put('docs/{tipo_documento_empresa}', [CategoriaDocumentoEmpresaController::class, 'update'])
+            ->name('docs.update');
+        Route::delete('docs/{tipo_documento_empresa}', [CategoriaDocumentoEmpresaController::class, 'destroy'])
+            ->name('docs.destroy');
 
+        // Funções da categoria
         Route::get('funcoes', [CategoriaFuncaoController::class, 'index'])
             ->name('funcoes.index');
         Route::post('funcoes', [CategoriaFuncaoController::class, 'store'])
@@ -53,37 +55,40 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         Route::delete('funcoes/{funcao}', [CategoriaFuncaoController::class, 'destroy'])
             ->name('funcoes.destroy');
 
-        Route::get('funcoes/{funcao}/documentos', [CategoriaDocumentoFuncionarioController::class, 'index'])
-            ->name('funcoes.documentos.index');
-        Route::post('funcoes/{funcao}/documentos', [CategoriaDocumentoFuncionarioController::class, 'store'])
-            ->name('funcoes.documentos.store');
-        Route::put('funcoes/{funcao}/documentos/{tipo_documento_funcionario}', [CategoriaDocumentoFuncionarioController::class, 'update'])
-            ->name('funcoes.documentos.update');
-        Route::delete('funcoes/{funcao}/documentos/{tipo_documento_funcionario}', [CategoriaDocumentoFuncionarioController::class, 'destroy'])
-            ->name('funcoes.documentos.destroy');
+        // Tipos de documento dos funcionários (na função)
+        Route::get('funcoes/{funcao}/docs', [CategoriaDocumentoFuncionarioController::class, 'index'])
+            ->name('funcoes.docs.index');
+        Route::post('funcoes/{funcao}/docs', [CategoriaDocumentoFuncionarioController::class, 'store'])
+            ->name('funcoes.docs.store');
+        Route::put('funcoes/{funcao}/docs/{tipo_documento_funcionario}', [CategoriaDocumentoFuncionarioController::class, 'update'])
+            ->name('funcoes.docs.update');
+        Route::delete('funcoes/{funcao}/docs/{tipo_documento_funcionario}', [CategoriaDocumentoFuncionarioController::class, 'destroy'])
+            ->name('funcoes.docs.destroy');
     });
 
     Route::resource('parceiros', ParceiroController::class)
         ->except(['create', 'store'])
         ->parameters(['parceiros' => 'partner']);
 
-    Route::get('parceiros/{partner}/documentos-empresa', [ParceiroDocumentoEmpresaController::class, 'index'])
-        ->name('parceiros.documentos-empresa.index');
+    // Documentos da empresa do parceiro
+    Route::get('parceiros/{partner}/docs', [ParceiroDocumentoEmpresaController::class, 'index'])
+        ->name('parceiros.docs.index');
 
-    Route::get('documentos-empresa/{documento_empresa}/visualizar', [ParceiroDocumentoEmpresaController::class, 'download'])
-        ->name('documentos-empresa.download');
+    // Visualizar / validar documento de empresa
+    Route::get('docs/{documento_empresa}', [ParceiroDocumentoEmpresaController::class, 'download'])
+        ->name('docs.download');
+    Route::post('docs/{documento_empresa}/validar', [ParceiroDocumentoEmpresaController::class, 'validar'])
+        ->name('docs.validar');
 
-    Route::post('documentos-empresa/{documento_empresa}/validar', [ParceiroDocumentoEmpresaController::class, 'validar'])
-        ->name('documentos-empresa.validar');
+    // Documentos dos funcionários do parceiro
+    Route::get('parceiros/{partner}/funcionarios/{funcionario}/docs', [ParceiroDocumentoFuncionarioController::class, 'index'])
+        ->name('parceiros.funcionarios.docs.index');
 
-    Route::get('parceiros/{partner}/funcionarios/{funcionario}/documentos', [ParceiroDocumentoFuncionarioController::class, 'index'])
-        ->name('parceiros.funcionarios.documentos.index');
-
-    Route::get('documentos-funcionario/{documento_funcionario}/visualizar', [ParceiroDocumentoFuncionarioController::class, 'download'])
-        ->name('documentos-funcionario.download');
-
-    Route::post('documentos-funcionario/{documento_funcionario}/validar', [ParceiroDocumentoFuncionarioController::class, 'validar'])
-        ->name('documentos-funcionario.validar');
+    // Visualizar / validar documento de funcionário
+    Route::get('docs-func/{documento_funcionario}', [ParceiroDocumentoFuncionarioController::class, 'download'])
+        ->name('docs-func.download');
+    Route::post('docs-func/{documento_funcionario}/validar', [ParceiroDocumentoFuncionarioController::class, 'validar'])
+        ->name('docs-func.validar');
 
     Route::resource('convites', ConviteController::class)
         ->only(['index', 'create', 'store', 'destroy'])
@@ -101,15 +106,17 @@ Route::middleware(['auth', 'verified', 'partner', 'set.current.partner'])->prefi
         return view('parceiro.dashboard');
     })->name('dashboard');
 
-    Route::get('empresa/documentos', [EmpresaDocumentoController::class, 'index'])->name('empresa.documentos.index');
-    Route::post('empresa/documentos/{documento_empresa}/upload', [EmpresaDocumentoController::class, 'upload'])->name('empresa.documentos.upload');
-    Route::get('empresa/documentos/{documento_empresa}/visualizar', [EmpresaDocumentoController::class, 'download'])->name('empresa.documentos.download');
+    // Documentos da empresa
+    Route::get('docs', [EmpresaDocumentoController::class, 'index'])->name('docs.index');
+    Route::post('docs/{documento_empresa}/upload', [EmpresaDocumentoController::class, 'upload'])->name('docs.upload');
+    Route::get('docs/{documento_empresa}', [EmpresaDocumentoController::class, 'download'])->name('docs.download');
 
     Route::resource('funcionarios', FuncionarioController::class)->except(['show']);
 
-    Route::get('funcionarios/{funcionario}/documentos', [FuncionarioDocumentoController::class, 'index'])->name('funcionarios.documentos.index');
-    Route::post('funcionarios/{funcionario}/documentos/{documento_funcionario}/upload', [FuncionarioDocumentoController::class, 'upload'])->name('funcionarios.documentos.upload');
-    Route::get('funcionarios/{funcionario}/documentos/{documento_funcionario}/visualizar', [FuncionarioDocumentoController::class, 'download'])->name('funcionarios.documentos.download');
+    // Documentos dos funcionários
+    Route::get('funcionarios/{funcionario}/docs', [FuncionarioDocumentoController::class, 'index'])->name('funcionarios.docs.index');
+    Route::post('funcionarios/{funcionario}/docs/{documento_funcionario}/upload', [FuncionarioDocumentoController::class, 'upload'])->name('funcionarios.docs.upload');
+    Route::get('funcionarios/{funcionario}/docs/{documento_funcionario}', [FuncionarioDocumentoController::class, 'download'])->name('funcionarios.docs.download');
 
     Route::resource('filiais', FilialController::class)
         ->except(['show', 'destroy'])

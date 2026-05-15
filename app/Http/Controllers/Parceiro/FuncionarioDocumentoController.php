@@ -57,7 +57,7 @@ class FuncionarioDocumentoController extends Controller
         );
 
         return redirect()
-            ->route('parceiro.funcionarios.documentos.index', $funcionario)
+            ->route('parceiro.funcionarios.docs.index', $funcionario)
             ->with('status', 'Documento enviado e aguardando validação.');
     }
 

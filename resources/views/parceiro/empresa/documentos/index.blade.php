@@ -29,9 +29,9 @@
                                     <td class="py-3 pe-4">{{ $doc->validade?->format('d/m/Y') ?? '—' }}</td>
                                     <td class="py-3 pe-4 text-end whitespace-nowrap">
                                         @if ($doc->arquivo_caminho)
-                                            <a href="{{ route('parceiro.empresa.documentos.download', $doc) }}" class="text-indigo-600 hover:text-indigo-900 me-3">Baixar</a>
+                                            <a href="{{ route('parceiro.docs.download', $doc) }}" class="text-indigo-600 hover:text-indigo-900 me-3">Baixar</a>
                                         @endif
-                                        <form class="inline-block ms-2 align-top" method="POST" action="{{ route('parceiro.empresa.documentos.upload', $doc) }}" enctype="multipart/form-data">
+                                        <form class="inline-block ms-2 align-top" method="POST" action="{{ route('parceiro.docs.upload', $doc) }}" enctype="multipart/form-data">
                                             @csrf
                                             <input type="file" name="arquivo" accept=".pdf,.jpg,.jpeg,.png" class="text-xs max-w-[10rem]" required>
                                             <input type="date" name="validade" class="text-xs border-gray-300 rounded ms-1" required>
