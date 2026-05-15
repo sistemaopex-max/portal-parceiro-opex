@@ -4,12 +4,12 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Gerenciar categoria: {{ $category->nome }}
             </h2>
-            <a href="{{ route('admin.partner-categories.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar à lista</a>
+            <a href="{{ route('admin.categorias.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar à lista</a>
         </div>
     </x-slot>
 
     <div class="space-y-6 w-fit max-w-full">
-        @include('admin.partner-categories._category-alerts')
+        @include('admin.categorias._category-alerts')
 
         <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden w-fit max-w-full">
             <div class="px-5 py-4 border-b border-gray-100">
@@ -70,21 +70,21 @@
 
             <div class="px-5 py-3 bg-gray-50 border-t border-gray-100 flex flex-wrap gap-2">
                 <x-config-action-btn
-                    :href="route('admin.partner-categories.documentos-empresa.index', $category)"
+                    :href="route('admin.categorias.documentos-empresa.index', $category)"
                     variant="primary"
                 >
                     Gerenciar documentos
                 </x-config-action-btn>
 
                 <x-config-action-btn
-                    :href="route('admin.partner-categories.funcoes.index', $category)"
+                    :href="route('admin.categorias.funcoes.index', $category)"
                     variant="primary"
                 >
                     Gerenciar função de funcionários
                 </x-config-action-btn>
 
                 <x-config-action-btn
-                    :href="route('admin.partner-categories.edit', $category)"
+                    :href="route('admin.categorias.edit', $category)"
                     variant="primary"
                 >
                     Editar nome
@@ -92,7 +92,7 @@
 
                 @if ($category->partners_count === 0)
                     <form
-                        action="{{ route('admin.partner-categories.destroy', $category) }}"
+                        action="{{ route('admin.categorias.destroy', $category) }}"
                         method="POST"
                         class="inline"
                         onsubmit="return confirm('Excluir esta categoria?');"

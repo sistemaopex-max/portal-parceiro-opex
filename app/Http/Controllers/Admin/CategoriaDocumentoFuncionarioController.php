@@ -25,7 +25,7 @@ class CategoriaDocumentoFuncionarioController extends Controller
 
         $tipos = $funcao->tiposDocumentoFuncionario()->orderBy('nome')->get();
 
-        return view('admin.partner-categories.funcoes.documentos.index', [
+        return view('admin.categorias.funcoes.documentos.index', [
             'category' => $partner_category,
             'funcao' => $funcao,
             'tipos' => $tipos,

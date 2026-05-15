@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\ValidarDocumentoEmpresaRequest;
 use App\Models\DocumentoEmpresa;
 use App\Models\Partner;
 use App\Services\Documentos\GeradorSlots;
+use App\Services\UploadArquivoService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +18,7 @@ class ParceiroDocumentoEmpresaController extends Controller
 {
     public function __construct(
         private GeradorSlots $geradorSlots,
+        private UploadArquivoService $upload,
     ) {}
 
     public function index(Partner $partner): View
@@ -43,20 +45,12 @@ class ParceiroDocumentoEmpresaController extends Controller
         abort_unless(
             Storage::disk($documento_empresa->arquivo_disco)->exists($documento_empresa->arquivo_caminho),
             404,
-            'Arquivo não encontrado no armazenamento.'
         );
 
-        $disk = Storage::disk($documento_empresa->arquivo_disco);
-        $mime = $documento_empresa->arquivo_mime ?: ($disk->mimeType($documento_empresa->arquivo_caminho) ?: 'application/octet-stream');
-        $filename = basename($documento_empresa->arquivo_caminho);
-
-        return response()->stream(
-            fn () => fpassthru($disk->readStream($documento_empresa->arquivo_caminho)),
-            200,
-            [
-                'Content-Type' => $mime,
-                'Content-Disposition' => 'inline; filename="' . $filename . '"',
-            ]
+        return $this->upload->servir(
+            caminho: $documento_empresa->arquivo_caminho,
+            disco: $documento_empresa->arquivo_disco,
+            mimeHint: $documento_empresa->arquivo_mime,
         );
     }
 

@@ -25,6 +25,6 @@
 
     <div class="flex flex-wrap items-center gap-2">
         <x-config-action-btn type="submit" variant="primary">{{ $isEdit ? 'Salvar' : 'Cadastrar' }}</x-config-action-btn>
-        <x-config-action-btn :href="route('admin.partner-categories.index')" variant="default">Cancelar</x-config-action-btn>
+        <x-config-action-btn :href="route('admin.categorias.index')" variant="default">Cancelar</x-config-action-btn>
     </div>
 </div>

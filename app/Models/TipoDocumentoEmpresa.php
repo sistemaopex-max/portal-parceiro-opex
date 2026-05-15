@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class TipoDocumentoEmpresa extends Model
 {
@@ -22,8 +23,41 @@ class TipoDocumentoEmpresa extends Model
     protected $fillable = [
         'categoria_id',
         'nome',
+        'slug',
         'ativo',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (TipoDocumentoEmpresa $m) {
+            if (empty($m->slug)) {
+                $m->slug = static::gerarSlugUnico($m->nome);
+            }
+        });
+    }
+
+    public static function gerarSlugUnico(string $nome, ?int $ignoreId = null): string
+    {
+        $base = Str::slug($nome) ?: 'tipo';
+        $candidate = $base;
+        $i = 2;
+
+        while (
+            static::query()
+                ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+                ->where('slug', $candidate)
+                ->exists()
+        ) {
+            $candidate = $base . '-' . $i++;
+        }
+
+        return $candidate;
+    }
 
     protected function casts(): array
     {

@@ -1,11 +1,11 @@
 @php
     $homeUrl = route('admin.dashboard');
-    $categoriesUrl = route('admin.partner-categories.index');
+    $categoriesUrl = route('admin.categorias.index');
     $partnersUrl = route('admin.parceiros.index');
     $invitationsUrl = route('admin.invitations.index');
     $partnersMenuActive = request()->routeIs(
         'admin.parceiros.*',
-        'admin.partner-categories.*',
+        'admin.categorias.*',
         'admin.documentos-empresa.*',
         'admin.documentos-funcionario.*',
         'admin.invitations.*',
@@ -64,7 +64,7 @@
                 >Gerenciar</a>
                 <a
                     href="{{ $categoriesUrl }}"
-                    class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.partner-categories.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
+                    class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.categorias.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
                     @click="sidebarOpen = false; partnersOpen = false"
                 >Categorias</a>
                 <a

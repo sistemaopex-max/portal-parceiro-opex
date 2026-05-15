@@ -18,7 +18,7 @@ class CategoriaFuncaoController extends Controller
 
         $funcoes = $partner_category->funcoesFuncionario()->orderBy('nome')->get();
 
-        return view('admin.partner-categories.funcoes.index', [
+        return view('admin.categorias.funcoes.index', [
             'category' => $partner_category,
             'funcoes' => $funcoes,
         ]);
@@ -50,7 +50,7 @@ class CategoriaFuncaoController extends Controller
         $this->authorize('update', $partner_category);
         $this->assertFuncaoBelongsToCategory($partner_category, $funcao);
 
-        return view('admin.partner-categories.funcoes.edit', [
+        return view('admin.categorias.funcoes.edit', [
             'category' => $partner_category,
             'funcao' => $funcao,
         ]);
@@ -79,7 +79,7 @@ class CategoriaFuncaoController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.partner-categories.funcoes.index', $partner_category)
+            ->route('admin.categorias.funcoes.index', $partner_category)
             ->with('status', 'Função atualizada.');
     }
 

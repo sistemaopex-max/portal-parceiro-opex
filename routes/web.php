@@ -29,9 +29,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         return view('admin.dashboard');
     })->name('dashboard');
 
-    Route::resource('partner-categories', CategoriaParceiroController::class);
+    Route::resource('categorias', CategoriaParceiroController::class)
+        ->parameters(['categorias' => 'partner_category']);
 
-    Route::prefix('partner-categories/{partner_category}')->name('partner-categories.')->group(function () {
+    Route::prefix('categorias/{partner_category}')->name('categorias.')->group(function () {
         Route::get('documentos-empresa', [CategoriaDocumentoEmpresaController::class, 'index'])
             ->name('documentos-empresa.index');
         Route::post('documentos-empresa', [CategoriaDocumentoEmpresaController::class, 'store'])

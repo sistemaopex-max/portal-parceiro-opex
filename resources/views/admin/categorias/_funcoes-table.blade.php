@@ -28,8 +28,8 @@
                 <tbody class="divide-y divide-gray-100">
                     @foreach ($funcoes as $funcao)
                         @php
-                            $updateUrl = route('admin.partner-categories.funcoes.update', [$category, $funcao]);
-                            $destroyUrl = route('admin.partner-categories.funcoes.destroy', [$category, $funcao]);
+                            $updateUrl = route('admin.categorias.funcoes.update', [$category, $funcao]);
+                            $destroyUrl = route('admin.categorias.funcoes.destroy', [$category, $funcao]);
                             $editModalName = 'editar-funcao-'.$funcao->id;
                         @endphp
                         <tr>
@@ -38,7 +38,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <x-config-action-btn
-                                        :href="route('admin.partner-categories.funcoes.documentos.index', [$category, $funcao])"
+                                        :href="route('admin.categorias.funcoes.documentos.index', [$category, $funcao])"
                                         variant="primary"
                                     >
                                         Documentos
@@ -136,7 +136,7 @@
 </div>
 
 <x-modal name="nova-funcao" :show="$errors->has('nome') && ! old('funcao_id')" focusable>
-    <form method="POST" action="{{ route('admin.partner-categories.funcoes.store', $category) }}" class="p-6">
+    <form method="POST" action="{{ route('admin.categorias.funcoes.store', $category) }}" class="p-6">
         @csrf
 
         <h2 class="text-lg font-medium text-gray-900">Nova função</h2>

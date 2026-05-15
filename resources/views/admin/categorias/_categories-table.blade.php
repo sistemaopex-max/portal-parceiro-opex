@@ -33,7 +33,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <x-config-action-btn
-                                        :href="route('admin.partner-categories.show', $category)"
+                                        :href="route('admin.categorias.show', $category)"
                                         variant="primary"
                                     >
                                         Gerenciar
@@ -42,7 +42,7 @@
                                     @if ($category->partners_count === 0)
                                         <form
                                             method="POST"
-                                            action="{{ route('admin.partner-categories.destroy', $category) }}"
+                                            action="{{ route('admin.categorias.destroy', $category) }}"
                                             class="inline"
                                             onsubmit="return confirm('Excluir esta categoria?');"
                                         >
@@ -66,7 +66,7 @@
 </div>
 
 <x-modal name="nova-categoria" :show="$errors->has('nome') || $errors->has('descricao')" focusable maxWidth="lg">
-    <form method="POST" action="{{ route('admin.partner-categories.store') }}" class="p-6">
+    <form method="POST" action="{{ route('admin.categorias.store') }}" class="p-6">
         @csrf
 
         <h2 class="text-lg font-medium text-gray-900">Nova categoria</h2>

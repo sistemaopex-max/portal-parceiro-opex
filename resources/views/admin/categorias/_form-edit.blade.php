@@ -15,6 +15,6 @@
 
     <div class="flex flex-wrap items-center gap-2">
         <x-config-action-btn type="submit" variant="primary">Salvar</x-config-action-btn>
-        <x-config-action-btn :href="route('admin.partner-categories.show', $category)" variant="default">Cancelar</x-config-action-btn>
+        <x-config-action-btn :href="route('admin.categorias.show', $category)" variant="default">Cancelar</x-config-action-btn>
     </div>
 </div>

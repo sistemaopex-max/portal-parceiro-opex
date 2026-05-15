@@ -23,7 +23,7 @@ class CategoriaDocumentoEmpresaController extends Controller
 
         $tipos = $partner_category->tiposDocumentoEmpresa()->orderBy('nome')->get();
 
-        return view('admin.partner-categories.documentos-empresa.index', [
+        return view('admin.categorias.documentos-empresa.index', [
             'category' => $partner_category,
             'tipos' => $tipos,
         ]);

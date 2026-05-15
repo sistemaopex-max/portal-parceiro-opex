@@ -6,14 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StorePartnerCategoryRequest;
 use App\Http\Requests\Admin\UpdatePartnerCategoryRequest;
 use App\Models\PartnerCategory;
+use App\Services\CategoriaParceiroService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class CategoriaParceiroController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        private CategoriaParceiroService $service,
+    ) {
         $this->authorizeResource(PartnerCategory::class, 'partner_category');
     }
 
@@ -24,24 +25,20 @@ class CategoriaParceiroController extends Controller
             ->orderBy('nome')
             ->paginate(15);
 
-        return view('admin.partner-categories.index', compact('categories'));
+        return view('admin.categorias.index', compact('categories'));
     }
 
     public function create(): View
     {
-        return view('admin.partner-categories.create');
+        return view('admin.categorias.create');
     }
 
     public function store(StorePartnerCategoryRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $validated['slug'] = $this->resolveUniqueSlug(null, $validated['nome']);
-        $validated['ativo'] = $request->boolean('ativo', true);
-
-        $category = PartnerCategory::query()->create($validated);
+        $category = $this->service->criar($request->validated());
 
         return redirect()
-            ->route('admin.partner-categories.show', $category)
+            ->route('admin.categorias.show', $category)
             ->with('status', 'Categoria criada. Configure documentos e funções abaixo.');
     }
 
@@ -53,28 +50,24 @@ class CategoriaParceiroController extends Controller
         ]);
         $partner_category->loadCount('partners');
 
-        return view('admin.partner-categories.show', [
+        return view('admin.categorias.show', [
             'category' => $partner_category,
         ]);
     }
 
     public function edit(PartnerCategory $partner_category): View
     {
-        return view('admin.partner-categories.edit', [
+        return view('admin.categorias.edit', [
             'category' => $partner_category,
         ]);
     }
 
     public function update(UpdatePartnerCategoryRequest $request, PartnerCategory $partner_category): RedirectResponse
     {
-        $validated = $request->validated();
-        $validated['slug'] = $this->resolveUniqueSlug(null, $validated['nome'], $partner_category->id);
-
-        $partner_category->update($validated);
-        $partner_category->refresh();
+        $this->service->atualizar($partner_category, $request->validated());
 
         return redirect()
-            ->route('admin.partner-categories.show', $partner_category)
+            ->route('admin.categorias.show', $partner_category)
             ->with('status', 'Categoria atualizada com sucesso.');
     }
 
@@ -82,40 +75,14 @@ class CategoriaParceiroController extends Controller
     {
         if ($partner_category->partners()->exists()) {
             return redirect()
-                ->route('admin.partner-categories.index')
+                ->route('admin.categorias.index')
                 ->withErrors(['delete' => 'Não posso excluir pois há empresas com a categoria associada']);
         }
 
         $partner_category->delete();
 
         return redirect()
-            ->route('admin.partner-categories.index')
+            ->route('admin.categorias.index')
             ->with('status', 'Categoria excluída.');
-    }
-
-    private function resolveUniqueSlug(?string $slug, ?string $name, ?int $ignoreId = null): string
-    {
-        $base = $slug !== null && $slug !== ''
-            ? Str::slug($slug)
-            : Str::slug($name ?? '');
-
-        if ($base === '') {
-            $base = 'categoria';
-        }
-
-        $candidate = $base;
-        $suffix = 1;
-
-        while (
-            PartnerCategory::query()
-                ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
-                ->where('slug', $candidate)
-                ->exists()
-        ) {
-            $suffix++;
-            $candidate = $base . '-' . $suffix;
-        }
-
-        return $candidate;
     }
 }

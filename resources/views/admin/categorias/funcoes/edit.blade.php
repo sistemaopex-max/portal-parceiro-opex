@@ -4,17 +4,17 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Editar função — {{ $funcao->nome }}
             </h2>
-            <a href="{{ route('admin.partner-categories.funcoes.index', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar às funções</a>
+            <a href="{{ route('admin.categorias.funcoes.index', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar às funções</a>
         </div>
     </x-slot>
 
     <div class="space-y-6 max-w-4xl">
         <p class="text-sm text-gray-600">Categoria: <span class="font-medium">{{ $category->nome }}</span></p>
 
-        @include('admin.partner-categories._category-alerts')
+        @include('admin.categorias._category-alerts')
 
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-            <form method="POST" action="{{ route('admin.partner-categories.funcoes.update', [$category, $funcao]) }}" class="space-y-6">
+            <form method="POST" action="{{ route('admin.categorias.funcoes.update', [$category, $funcao]) }}" class="space-y-6">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="funcao_id" value="{{ $funcao->id }}">
@@ -33,7 +33,7 @@
 
                 <div class="flex flex-wrap items-center gap-2">
                     <x-config-action-btn type="submit" variant="primary">Salvar</x-config-action-btn>
-                    <x-config-action-btn :href="route('admin.partner-categories.funcoes.index', $category)" variant="default">
+                    <x-config-action-btn :href="route('admin.categorias.funcoes.index', $category)" variant="default">
                         Cancelar
                     </x-config-action-btn>
                 </div>

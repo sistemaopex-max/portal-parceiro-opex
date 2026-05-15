@@ -4,14 +4,14 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Funções de funcionário — {{ $category->nome }}
             </h2>
-            <a href="{{ route('admin.partner-categories.show', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar à categoria</a>
+            <a href="{{ route('admin.categorias.show', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar à categoria</a>
         </div>
     </x-slot>
 
     <div class="space-y-6 max-w-4xl">
-        @include('admin.partner-categories._category-alerts')
+        @include('admin.categorias._category-alerts')
 
-        @include('admin.partner-categories._funcoes-table', [
+        @include('admin.categorias._funcoes-table', [
             'category' => $category,
             'funcoes' => $funcoes,
         ])

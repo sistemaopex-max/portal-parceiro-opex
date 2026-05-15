@@ -4,17 +4,17 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Documentos da empresa — {{ $category->nome }}
             </h2>
-            <a href="{{ route('admin.partner-categories.show', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar à categoria</a>
+            <a href="{{ route('admin.categorias.show', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar à categoria</a>
         </div>
     </x-slot>
 
     <div class="space-y-6 max-w-4xl">
-        @include('admin.partner-categories._category-alerts')
+        @include('admin.categorias._category-alerts')
 
-        @include('admin.partner-categories._tipo-documento-table', [
+        @include('admin.categorias._tipo-documento-table', [
             'tipos' => $tipos,
             'category' => $category,
-            'routeBase' => 'admin.partner-categories.documentos-empresa',
+            'routeBase' => 'admin.categorias.documentos-empresa',
             'routeParams' => [$category],
             'modalPrefix' => 'documento-empresa',
         ])

@@ -8,6 +8,7 @@ use App\Models\DocumentoFuncionario;
 use App\Models\Funcionario;
 use App\Models\Partner;
 use App\Services\Documentos\GeradorSlots;
+use App\Services\UploadArquivoService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -18,6 +19,7 @@ class ParceiroDocumentoFuncionarioController extends Controller
 {
     public function __construct(
         private GeradorSlots $geradorSlots,
+        private UploadArquivoService $upload,
     ) {}
 
     public function index(Partner $partner, Funcionario $funcionario): View
@@ -46,20 +48,12 @@ class ParceiroDocumentoFuncionarioController extends Controller
         abort_unless(
             Storage::disk($documento_funcionario->arquivo_disco)->exists($documento_funcionario->arquivo_caminho),
             404,
-            'Arquivo não encontrado no armazenamento.'
         );
 
-        $disk = Storage::disk($documento_funcionario->arquivo_disco);
-        $mime = $documento_funcionario->arquivo_mime ?: ($disk->mimeType($documento_funcionario->arquivo_caminho) ?: 'application/octet-stream');
-        $filename = basename($documento_funcionario->arquivo_caminho);
-
-        return response()->stream(
-            fn () => fpassthru($disk->readStream($documento_funcionario->arquivo_caminho)),
-            200,
-            [
-                'Content-Type' => $mime,
-                'Content-Disposition' => 'inline; filename="' . $filename . '"',
-            ]
+        return $this->upload->servir(
+            caminho: $documento_funcionario->arquivo_caminho,
+            disco: $documento_funcionario->arquivo_disco,
+            mimeHint: $documento_funcionario->arquivo_mime,
         );
     }
 

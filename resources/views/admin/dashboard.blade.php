@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="grid gap-4 sm:grid-cols-2">
-            <a href="{{ route('admin.partner-categories.index') }}" class="block bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:ring-2 hover:ring-indigo-500 transition">
+            <a href="{{ route('admin.categorias.index') }}" class="block bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:ring-2 hover:ring-indigo-500 transition">
                 <h3 class="text-lg font-semibold text-gray-900">Categorias</h3>
                 <p class="mt-2 text-sm text-gray-600">Cadastre categorias, documentos da empresa, funções e documentos por função.</p>
             </a>
