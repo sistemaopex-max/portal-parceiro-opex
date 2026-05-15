@@ -7,7 +7,11 @@
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
             <form method="POST" action="{{ route('parceiro.funcionarios.store') }}">
                 @csrf
-                @include('parceiro.funcionarios._form', ['funcionario' => null, 'funcoes' => $funcoes])
+                @include('parceiro.funcionarios._form', [
+                    'funcionario' => null,
+                    'funcoes' => $funcoes,
+                    'partner' => $partner,
+                ])
             </form>
         </div>
     </div>

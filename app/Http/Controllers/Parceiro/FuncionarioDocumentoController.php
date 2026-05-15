@@ -10,7 +10,6 @@ use App\Models\Funcionario;
 use App\Services\Documentos\GeradorSlots;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -22,7 +21,7 @@ class FuncionarioDocumentoController extends Controller
 
     public function index(Funcionario $funcionario): View
     {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if($partner === null || $funcionario->parceiro_id !== $partner->id, 404);
 
         $this->geradorSlots->garantirSlotsFuncionario($funcionario);
@@ -41,7 +40,7 @@ class FuncionarioDocumentoController extends Controller
         Funcionario $funcionario,
         DocumentoFuncionario $documento_funcionario,
     ): RedirectResponse {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if(
             $partner === null
             || $funcionario->parceiro_id !== $partner->id
@@ -51,22 +50,32 @@ class FuncionarioDocumentoController extends Controller
 
         $disk = 'local';
         $file = $request->file('arquivo');
-        $ext = $file->getClientOriginalExtension() ?: 'bin';
-        $basename = (string) Str::uuid();
-        $relativeDir = "parceiros/{$partner->id}/funcionarios/{$funcionario->id}/documentos/{$documento_funcionario->id}";
+        $ext = strtoupper($file->getClientOriginalExtension() ?: 'bin');
+        $dir = "parceiros/{$partner->slug}/funcionarios/{$funcionario->slug}";
 
         if ($documento_funcionario->arquivo_caminho) {
             Storage::disk($documento_funcionario->arquivo_disco ?? $disk)->delete($documento_funcionario->arquivo_caminho);
         }
 
-        $storedPath = $file->storeAs($relativeDir, "{$basename}.{$ext}", $disk);
+        $documento_funcionario->load('tipo');
+        $tipoNome = $documento_funcionario->tipo?->nome ?? 'DOCUMENTO';
+        $empresaNome = $partner->razao_social;
+        $funcionarioNome = $funcionario->nome;
+        $data = now()->format('Ymd');
+
+        $nome = $this->gerarNomeArquivo(
+            [$tipoNome, $empresaNome, $funcionarioNome, $data],
+            $ext,
+            $disk,
+            $dir
+        );
+
+        $storedPath = $file->storeAs($dir, $nome, $disk);
 
         $documento_funcionario->update([
             'arquivo_disco' => $disk,
             'arquivo_caminho' => $storedPath,
-            'arquivo_nome_original' => $file->getClientOriginalName(),
             'arquivo_mime' => $file->getClientMimeType(),
-            'arquivo_tamanho' => $file->getSize(),
             'validade' => $request->date('validade'),
             'status' => StatusDocumento::Pendente,
             'validado_por_id' => null,
@@ -81,7 +90,7 @@ class FuncionarioDocumentoController extends Controller
 
     public function download(Funcionario $funcionario, DocumentoFuncionario $documento_funcionario): StreamedResponse
     {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if(
             $partner === null
             || $funcionario->parceiro_id !== $partner->id
@@ -93,9 +102,35 @@ class FuncionarioDocumentoController extends Controller
 
         abort_if($documento_funcionario->arquivo_caminho === null || $documento_funcionario->arquivo_disco === null, 404);
 
-        return Storage::disk($documento_funcionario->arquivo_disco)->download(
-            $documento_funcionario->arquivo_caminho,
-            $documento_funcionario->arquivo_nome_original ?? 'documento'
+        $disk = Storage::disk($documento_funcionario->arquivo_disco);
+        $mime = $documento_funcionario->arquivo_mime ?: ($disk->mimeType($documento_funcionario->arquivo_caminho) ?: 'application/octet-stream');
+        $filename = basename($documento_funcionario->arquivo_caminho);
+
+        return response()->stream(
+            fn () => fpassthru($disk->readStream($documento_funcionario->arquivo_caminho)),
+            200,
+            [
+                'Content-Type' => $mime,
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            ]
         );
+    }
+
+    private function gerarNomeArquivo(array $partes, string $ext, string $disco, string $dir): string
+    {
+        $base = implode('-', array_map(
+            fn ($p) => strtoupper((string) preg_replace('/[^A-Z0-9]+/i', '-', $p)),
+            $partes
+        ));
+        $base = trim($base, '-');
+        $nome = "{$base}.{$ext}";
+        $i = 2;
+
+        while (Storage::disk($disco)->exists("{$dir}/{$nome}")) {
+            $nome = "{$base}-{$i}.{$ext}";
+            $i++;
+        }
+
+        return $nome;
     }
 }

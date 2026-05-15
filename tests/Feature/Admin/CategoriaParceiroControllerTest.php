@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PartnerCategoryControllerTest extends TestCase
+class CategoriaParceiroControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -26,17 +26,17 @@ class PartnerCategoryControllerTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $response = $this->actingAs($admin)->post(route('admin.partner-categories.store'), [
-            'name' => 'Distribuidor',
-            'description' => 'Teste',
-            'is_active' => '1',
+            'nome' => 'Distribuidor',
+            'descricao' => 'Teste',
+            'ativo' => '1',
         ]);
 
         $category = PartnerCategory::query()->where('slug', 'distribuidor')->first();
         $this->assertNotNull($category);
         $response->assertRedirect(route('admin.partner-categories.show', $category));
-        $this->assertDatabaseHas('partner_categories', [
+        $this->assertDatabaseHas('categorias_parceiro', [
             'slug' => 'distribuidor',
-            'name' => 'Distribuidor',
+            'nome' => 'Distribuidor',
         ]);
     }
 
@@ -56,6 +56,6 @@ class PartnerCategoryControllerTest extends TestCase
         $response->assertSessionHasErrors([
             'delete' => 'Não posso excluir pois há empresas com a categoria associada',
         ]);
-        $this->assertDatabaseHas('partner_categories', ['id' => $category->id]);
+        $this->assertDatabaseHas('categorias_parceiro', ['id' => $category->id]);
     }
 }

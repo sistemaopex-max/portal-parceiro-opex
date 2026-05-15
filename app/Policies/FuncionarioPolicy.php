@@ -9,7 +9,7 @@ class FuncionarioPolicy
 {
     public function viewAny(User $user): bool
     {
-        return ($user->isPartner() && $user->partner !== null) || $user->isBackOffice();
+        return ($user->isPartner() && $user->currentPartner() !== null) || $user->isBackOffice();
     }
 
     public function view(User $user, Funcionario $funcionario): bool
@@ -19,7 +19,7 @@ class FuncionarioPolicy
 
     public function create(User $user): bool
     {
-        return $user->isPartner() && $user->partner !== null;
+        return $user->isPartner() && $user->currentPartner() !== null;
     }
 
     public function update(User $user, Funcionario $funcionario): bool
@@ -44,6 +44,6 @@ class FuncionarioPolicy
 
     private function possui(User $user, Funcionario $funcionario): bool
     {
-        return $user->isPartner() && $user->partner?->id === $funcionario->parceiro_id;
+        return $user->isPartner() && $user->currentPartner()?->id === $funcionario->parceiro_id;
     }
 }

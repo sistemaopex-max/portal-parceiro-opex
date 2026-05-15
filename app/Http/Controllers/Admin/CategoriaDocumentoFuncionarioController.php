@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-class CategoryDocumentoFuncionarioController extends Controller
+class CategoriaDocumentoFuncionarioController extends Controller
 {
     public function __construct(
         private GeradorSlots $geradorSlots,
@@ -115,7 +115,7 @@ class CategoryDocumentoFuncionarioController extends Controller
 
     private function assertFuncaoBelongsToCategory(PartnerCategory $category, FuncaoFuncionario $funcao): void
     {
-        abort_if($funcao->partner_category_id !== $category->id, 404);
+        abort_if($funcao->categoria_id !== $category->id, 404);
     }
 
     private function assertTipoBelongsToFuncao(FuncaoFuncionario $funcao, TipoDocumentoFuncionario $tipo): void

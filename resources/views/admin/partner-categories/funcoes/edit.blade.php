@@ -9,7 +9,7 @@
     </x-slot>
 
     <div class="space-y-6 max-w-4xl">
-        <p class="text-sm text-gray-600">Categoria: <span class="font-medium">{{ $category->name }}</span></p>
+        <p class="text-sm text-gray-600">Categoria: <span class="font-medium">{{ $category->nome }}</span></p>
 
         @include('admin.partner-categories._category-alerts')
 

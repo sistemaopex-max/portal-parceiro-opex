@@ -15,8 +15,12 @@ class TipoDocumentoEmpresa extends Model
 
     protected $table = 'tipos_documento_empresa';
 
+    public const CREATED_AT = 'criado_em';
+
+    public const UPDATED_AT = 'modificado_em';
+
     protected $fillable = [
-        'partner_category_id',
+        'categoria_id',
         'nome',
         'ativo',
     ];
@@ -30,7 +34,7 @@ class TipoDocumentoEmpresa extends Model
 
     public function categoria(): BelongsTo
     {
-        return $this->belongsTo(PartnerCategory::class, 'partner_category_id');
+        return $this->belongsTo(PartnerCategory::class, 'categoria_id');
     }
 
     public function documentos(): HasMany

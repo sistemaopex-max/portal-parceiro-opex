@@ -16,7 +16,7 @@ class FuncaoFuncionarioFactory extends Factory
     public function definition(): array
     {
         return [
-            'partner_category_id' => PartnerCategory::factory(),
+            'categoria_id' => PartnerCategory::factory(),
             'nome' => fake()->unique()->jobTitle(),
             'ativo' => true,
         ];

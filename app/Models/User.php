@@ -7,7 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -24,9 +24,18 @@ class User extends Authenticatable
 
     public const ROLE_ADMIN = 'admin';
 
-    public function partner(): HasOne
+    public function partners(): HasMany
     {
-        return $this->hasOne(Partner::class);
+        return $this->hasMany(Partner::class);
+    }
+
+    public function currentPartner(): ?Partner
+    {
+        $id = session('current_partner_id');
+
+        return $this->partners()
+            ->when($id, fn ($q) => $q->where('id', $id))
+            ->first();
     }
 
     public function isPartner(): bool

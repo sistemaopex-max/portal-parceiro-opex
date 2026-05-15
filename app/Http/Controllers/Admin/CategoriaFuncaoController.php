@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-class CategoryFuncaoController extends Controller
+class CategoriaFuncaoController extends Controller
 {
     public function index(PartnerCategory $partner_category): View
     {
@@ -33,7 +33,7 @@ class CategoryFuncaoController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('funcoes_funcionario', 'nome')->where('partner_category_id', $partner_category->id),
+                Rule::unique('funcoes_funcionario', 'nome')->where('categoria_id', $partner_category->id),
             ],
         ]);
 
@@ -67,7 +67,7 @@ class CategoryFuncaoController extends Controller
                 'string',
                 'max:255',
                 Rule::unique('funcoes_funcionario', 'nome')
-                    ->where('partner_category_id', $partner_category->id)
+                    ->where('categoria_id', $partner_category->id)
                     ->ignore($funcao->id),
             ],
             'ativo' => ['nullable', 'boolean'],
@@ -100,6 +100,6 @@ class CategoryFuncaoController extends Controller
 
     private function assertFuncaoBelongsToCategory(PartnerCategory $category, FuncaoFuncionario $funcao): void
     {
-        abort_if($funcao->partner_category_id !== $category->id, 404);
+        abort_if($funcao->categoria_id !== $category->id, 404);
     }
 }

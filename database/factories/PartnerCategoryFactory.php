@@ -15,13 +15,13 @@ class PartnerCategoryFactory extends Factory
 
     public function definition(): array
     {
-        $name = fake()->unique()->company().' Categoria';
+        $nome = fake()->unique()->company() . ' Categoria';
 
         return [
-            'name' => $name,
-            'slug' => Str::slug($name).'-'.fake()->unique()->numerify('###'),
-            'description' => fake()->optional()->sentence(),
-            'is_active' => true,
+            'nome' => $nome,
+            'slug' => Str::slug($nome) . '-' . fake()->unique()->numerify('###'),
+            'descricao' => fake()->optional()->sentence(),
+            'ativo' => true,
         ];
     }
 }

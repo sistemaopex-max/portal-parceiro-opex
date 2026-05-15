@@ -35,7 +35,7 @@
                                             rel="noopener noreferrer"
                                             class="text-indigo-600 hover:text-indigo-900 font-medium"
                                         >
-                                            {{ $doc->arquivo_nome_original ?? 'Baixar arquivo' }}
+                                            Visualizar arquivo
                                         </a>
                                     @else
                                         <span class="text-xs text-gray-500">—</span>

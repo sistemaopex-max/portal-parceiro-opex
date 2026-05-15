@@ -81,32 +81,34 @@ return new class extends Migration
             $table->index(['connection', 'queue', 'failed_at']);
         });
 
-        Schema::create('partner_categories', function (Blueprint $table) {
+        Schema::create('categorias_parceiro', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nome');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
+            $table->text('descricao')->nullable();
+            $table->boolean('ativo')->default(true);
+            $table->timestamp('criado_em')->useCurrent();
+            $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();
         });
 
         Schema::create('tipos_documento_empresa', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('partner_category_id')->constrained('partner_categories')->cascadeOnDelete();
+            $table->foreignId('categoria_id')->constrained('categorias_parceiro')->cascadeOnDelete();
             $table->string('nome');
             $table->boolean('ativo')->default(true);
-            $table->timestamps();
+            $table->timestamp('criado_em')->useCurrent();
+            $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();
 
-            $table->unique(['partner_category_id', 'nome']);
+            $table->unique(['categoria_id', 'nome']);
         });
 
-        Schema::create('partners', function (Blueprint $table) {
+        Schema::create('parceiros', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
-            $table->foreignId('categoria_id')->constrained('partner_categories')->restrictOnDelete();
+            $table->foreignId('user_id')->index()->constrained()->cascadeOnDelete();
+            $table->foreignId('categoria_id')->constrained('categorias_parceiro')->restrictOnDelete();
             $table->string('slug', 180)->unique();
             $table->string('razao_social');
-            $table->string('cnpj', 18)->nullable()->unique();
+            $table->string('cnpj', 14)->nullable()->unique();
             $table->string('telefone', 32)->nullable();
             $table->string('endereco', 500)->nullable();
             $table->string('email')->nullable();
@@ -119,10 +121,11 @@ return new class extends Migration
 
         Schema::create('funcoes_funcionario', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('partner_category_id')->constrained('partner_categories')->cascadeOnDelete();
+            $table->foreignId('categoria_id')->constrained('categorias_parceiro')->cascadeOnDelete();
             $table->string('nome');
             $table->boolean('ativo')->default(true);
-            $table->timestamps();
+            $table->timestamp('criado_em')->useCurrent();
+            $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();
         });
 
         Schema::create('tipos_documento_funcionario', function (Blueprint $table) {
@@ -130,17 +133,20 @@ return new class extends Migration
             $table->foreignId('funcao_funcionario_id')->constrained('funcoes_funcionario')->cascadeOnDelete();
             $table->string('nome');
             $table->boolean('ativo')->default(true);
-            $table->timestamps();
+            $table->timestamp('criado_em')->useCurrent();
+            $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();
 
             $table->unique(['funcao_funcionario_id', 'nome']);
         });
 
         Schema::create('funcionarios', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parceiro_id')->constrained('partners')->cascadeOnDelete();
+            $table->foreignId('parceiro_id')->constrained('parceiros')->cascadeOnDelete();
             $table->foreignId('funcao_funcionario_id')->constrained('funcoes_funcionario')->restrictOnDelete();
             $table->string('nome');
-            $table->string('cpf', 14);
+            $table->string('slug')->unique();
+            $table->string('cpf', 11);
+            $table->date('data_nascimento')->nullable();
             $table->boolean('documentacao_em_dia')->default(false);
             $table->timestamp('criado_em')->useCurrent();
             $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();
@@ -150,13 +156,12 @@ return new class extends Migration
 
         Schema::create('documentos_empresa', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parceiro_id')->constrained('partners')->cascadeOnDelete();
+            $table->uuid('uuid')->unique();
+            $table->foreignId('parceiro_id')->constrained('parceiros')->cascadeOnDelete();
             $table->foreignId('tipo_documento_empresa_id')->constrained('tipos_documento_empresa')->restrictOnDelete();
             $table->string('arquivo_disco', 32)->nullable();
             $table->string('arquivo_caminho', 512)->nullable();
-            $table->string('arquivo_nome_original', 255)->nullable();
             $table->string('arquivo_mime', 127)->nullable();
-            $table->unsignedBigInteger('arquivo_tamanho')->nullable();
             $table->date('validade')->nullable();
             $table->string('status', 32)->default('faltando_documento');
             $table->foreignId('validado_por_id')->nullable()->constrained('users')->nullOnDelete();
@@ -170,13 +175,12 @@ return new class extends Migration
 
         Schema::create('documentos_funcionario', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->foreignId('funcionario_id')->constrained('funcionarios')->cascadeOnDelete();
             $table->foreignId('tipo_documento_funcionario_id')->constrained('tipos_documento_funcionario')->restrictOnDelete();
             $table->string('arquivo_disco', 32)->nullable();
             $table->string('arquivo_caminho', 512)->nullable();
-            $table->string('arquivo_nome_original', 255)->nullable();
             $table->string('arquivo_mime', 127)->nullable();
-            $table->unsignedBigInteger('arquivo_tamanho')->nullable();
             $table->date('validade')->nullable();
             $table->string('status', 32)->default('faltando_documento');
             $table->foreignId('validado_por_id')->nullable()->constrained('users')->nullOnDelete();
@@ -187,18 +191,31 @@ return new class extends Migration
 
             $table->unique(['funcionario_id', 'tipo_documento_funcionario_id']);
         });
+
+        Schema::create('convites', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('criado_por')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('categoria_id')->constrained('categorias_parceiro')->restrictOnDelete();
+            $table->string('email');
+            $table->string('token', 64)->unique();
+            $table->timestamp('expira_em');
+            $table->timestamp('usado_em')->nullable();
+            $table->timestamp('criado_em')->useCurrent();
+            $table->timestamp('modificado_em')->useCurrent()->useCurrentOnUpdate();
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('convites');
         Schema::dropIfExists('documentos_funcionario');
         Schema::dropIfExists('documentos_empresa');
         Schema::dropIfExists('funcionarios');
         Schema::dropIfExists('tipos_documento_funcionario');
         Schema::dropIfExists('funcoes_funcionario');
-        Schema::dropIfExists('partners');
+        Schema::dropIfExists('parceiros');
         Schema::dropIfExists('tipos_documento_empresa');
-        Schema::dropIfExists('partner_categories');
+        Schema::dropIfExists('categorias_parceiro');
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('job_batches');
         Schema::dropIfExists('jobs');

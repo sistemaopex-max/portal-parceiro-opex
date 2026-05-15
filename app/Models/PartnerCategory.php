@@ -12,17 +12,23 @@ class PartnerCategory extends Model
     /** @use HasFactory<PartnerCategoryFactory> */
     use HasFactory;
 
+    protected $table = 'categorias_parceiro';
+
+    public const CREATED_AT = 'criado_em';
+
+    public const UPDATED_AT = 'modificado_em';
+
     protected $fillable = [
-        'name',
+        'nome',
         'slug',
-        'description',
-        'is_active',
+        'descricao',
+        'ativo',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
+            'ativo' => 'boolean',
         ];
     }
 
@@ -33,7 +39,7 @@ class PartnerCategory extends Model
 
     public function tiposDocumentoEmpresa(): HasMany
     {
-        return $this->hasMany(TipoDocumentoEmpresa::class, 'partner_category_id');
+        return $this->hasMany(TipoDocumentoEmpresa::class, 'categoria_id');
     }
 
     public function tiposDocumentoEmpresaAtivos(): HasMany
@@ -43,7 +49,7 @@ class PartnerCategory extends Model
 
     public function funcoesFuncionario(): HasMany
     {
-        return $this->hasMany(FuncaoFuncionario::class, 'partner_category_id');
+        return $this->hasMany(FuncaoFuncionario::class, 'categoria_id');
     }
 
     public function funcoesFuncionarioAtivas(): HasMany

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class PartnerDocumentoEmpresaController extends Controller
+class ParceiroDocumentoEmpresaController extends Controller
 {
     public function __construct(
         private GeradorSlots $geradorSlots,
@@ -46,9 +46,17 @@ class PartnerDocumentoEmpresaController extends Controller
             'Arquivo não encontrado no armazenamento.'
         );
 
-        return Storage::disk($documento_empresa->arquivo_disco)->download(
-            $documento_empresa->arquivo_caminho,
-            $documento_empresa->arquivo_nome_original ?? 'documento'
+        $disk = Storage::disk($documento_empresa->arquivo_disco);
+        $mime = $documento_empresa->arquivo_mime ?: ($disk->mimeType($documento_empresa->arquivo_caminho) ?: 'application/octet-stream');
+        $filename = basename($documento_empresa->arquivo_caminho);
+
+        return response()->stream(
+            fn () => fpassthru($disk->readStream($documento_empresa->arquivo_caminho)),
+            200,
+            [
+                'Content-Type' => $mime,
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            ]
         );
     }
 

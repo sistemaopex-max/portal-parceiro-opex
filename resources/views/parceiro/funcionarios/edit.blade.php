@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Editar funcionário</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Editar funcionário — {{ $funcionario->nome }}</h2>
     </x-slot>
 
     <div class="max-w-2xl">
@@ -8,7 +8,11 @@
             <form method="POST" action="{{ route('parceiro.funcionarios.update', $funcionario) }}">
                 @csrf
                 @method('PUT')
-                @include('parceiro.funcionarios._form', ['funcionario' => $funcionario, 'funcoes' => $funcoes])
+                @include('parceiro.funcionarios._form', [
+                    'funcionario' => $funcionario,
+                    'funcoes' => $funcoes,
+                    'partner' => $partner,
+                ])
             </form>
         </div>
     </div>

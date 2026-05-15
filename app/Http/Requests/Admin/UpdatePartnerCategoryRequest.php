@@ -17,8 +17,8 @@ class UpdatePartnerCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:10000'],
+            'nome' => ['required', 'string', 'max:255'],
+            'descricao' => ['nullable', 'string', 'max:10000'],
         ];
     }
 
@@ -28,8 +28,8 @@ class UpdatePartnerCategoryRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'nome',
-            'description' => 'descrição',
+            'nome' => 'nome',
+            'descricao' => 'descrição',
         ];
     }
 }

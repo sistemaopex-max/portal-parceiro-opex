@@ -16,7 +16,7 @@ class TipoDocumentoEmpresaFactory extends Factory
     public function definition(): array
     {
         return [
-            'partner_category_id' => PartnerCategory::factory(),
+            'categoria_id' => PartnerCategory::factory(),
             'nome' => fake()->unique()->words(3, true),
             'ativo' => true,
         ];

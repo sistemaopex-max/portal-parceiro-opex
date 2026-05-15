@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-class CategoryDocumentoEmpresaController extends Controller
+class CategoriaDocumentoEmpresaController extends Controller
 {
     public function __construct(
         private GeradorSlots $geradorSlots,
@@ -38,7 +38,7 @@ class CategoryDocumentoEmpresaController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('tipos_documento_empresa', 'nome')->where('partner_category_id', $partner_category->id),
+                Rule::unique('tipos_documento_empresa', 'nome')->where('categoria_id', $partner_category->id),
             ],
         ]);
 
@@ -65,7 +65,7 @@ class CategoryDocumentoEmpresaController extends Controller
                 'string',
                 'max:255',
                 Rule::unique('tipos_documento_empresa', 'nome')
-                    ->where('partner_category_id', $partner_category->id)
+                    ->where('categoria_id', $partner_category->id)
                     ->ignore($tipo_documento_empresa->id),
             ],
             'ativo' => ['nullable', 'boolean'],
@@ -102,6 +102,6 @@ class CategoryDocumentoEmpresaController extends Controller
 
     private function assertTipoBelongsToCategory(PartnerCategory $category, TipoDocumentoEmpresa $tipo): void
     {
-        abort_if($tipo->partner_category_id !== $category->id, 404);
+        abort_if($tipo->categoria_id !== $category->id, 404);
     }
 }

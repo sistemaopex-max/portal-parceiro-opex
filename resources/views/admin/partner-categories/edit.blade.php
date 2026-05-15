@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar categoria: {{ $category->name }}
+                Editar categoria: {{ $category->nome }}
             </h2>
             <a href="{{ route('admin.partner-categories.show', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar</a>
         </div>

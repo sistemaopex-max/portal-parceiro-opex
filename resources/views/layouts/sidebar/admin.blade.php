@@ -2,11 +2,13 @@
     $homeUrl = route('admin.dashboard');
     $categoriesUrl = route('admin.partner-categories.index');
     $partnersUrl = route('admin.parceiros.index');
+    $invitationsUrl = route('admin.invitations.index');
     $partnersMenuActive = request()->routeIs(
         'admin.parceiros.*',
         'admin.partner-categories.*',
         'admin.documentos-empresa.*',
         'admin.documentos-funcionario.*',
+        'admin.invitations.*',
     );
     $partnersBtn = $partnersMenuActive
         ? 'bg-white/15 text-white shadow-sm ring-1 ring-inset ring-white/20'
@@ -65,6 +67,11 @@
                     class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.partner-categories.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
                     @click="sidebarOpen = false; partnersOpen = false"
                 >Categorias</a>
+                <a
+                    href="{{ $invitationsUrl }}"
+                    class="block rounded-md px-2 py-1.5 text-sm hover:bg-white/10 hover:text-white {{ request()->routeIs('admin.invitations.*') ? 'bg-white/10 text-white font-medium' : 'text-white/90' }}"
+                    @click="sidebarOpen = false; partnersOpen = false"
+                >Convites</a>
             </div>
         </div>
     </nav>

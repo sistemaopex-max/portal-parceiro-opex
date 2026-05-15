@@ -23,14 +23,14 @@
                     action="{{ route('admin.parceiros.index') }}"
                     class="mb-6 rounded-md border border-gray-200 bg-gray-50 px-3 py-2.5"
                 >
-                    <div class="flex min-w-0 flex-nowrap items-center gap-3 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5">
+                    <div class="flex min-w-0 flex-nowrap items-center gap-3 overflow-x-auto pb-0.5">
                         <label for="busca" class="shrink-0 text-sm font-medium whitespace-nowrap text-gray-700">Pesquisar</label>
                         <input
                             id="busca"
                             name="busca"
                             type="search"
                             value="{{ request('busca') }}"
-                            placeholder="Razão social, e-mail, cidade ou endereço"
+                            placeholder="Razão social, CNPJ, cidade…"
                             autocomplete="off"
                             class="h-10 min-w-[10rem] flex-1 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
@@ -43,7 +43,7 @@
                             <option value="">Todas as categorias</option>
                             @foreach ($filterCategories as $cat)
                                 <option value="{{ $cat->id }}" @selected((string) request('categoria') === (string) $cat->id)>
-                                    {{ $cat->name }}
+                                    {{ $cat->nome }}
                                 </option>
                             @endforeach
                         </select>
@@ -56,7 +56,7 @@
                         @if ($hasFilters)
                             <a
                                 href="{{ route('admin.parceiros.index') }}"
-                                class="inline-flex h-10 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+                                class="inline-flex h-10 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
                             >
                                 Limpar
                             </a>
@@ -69,44 +69,49 @@
                         {{ $hasFilters ? 'Nenhum parceiro encontrado com os filtros aplicados.' : 'Nenhum parceiro cadastrado ainda.' }}
                     </p>
                 @else
-                    <div class="mt-6 overflow-x-auto">
+                    <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
                             <thead>
                                 <tr class="text-left text-gray-600">
-                                    <th class="py-2 pe-4">Razão social</th>
-                                    <th class="py-2 pe-4 max-w-[14rem]">Endereço</th>
-                                    <th class="py-2 pe-4">Cidade</th>
-                                    <th class="py-2 pe-4">UF</th>
-                                    <th class="py-2 pe-4">Categoria</th>
-                                    <th class="py-2 pe-4">Ativo</th>
-                                    <th class="py-2 pe-4">E-mail</th>
-                                    <th class="py-2 pe-4 text-end">Ações</th>
+                                    <th class="py-2 pe-4 font-medium">Razão Social</th>
+                                    <th class="py-2 pe-4 font-medium">CNPJ</th>
+                                    <th class="py-2 pe-4 font-medium">Cidade</th>
+                                    <th class="py-2 pe-4 font-medium">UF</th>
+                                    <th class="py-2 pe-4 font-medium">Ativo</th>
+                                    <th class="py-2 pe-4 font-medium">Documentação</th>
+                                    <th class="py-2 pe-4 font-medium">Ações</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
                                 @foreach ($partners as $partner)
-                                    <tr>
-                                        <td class="py-3 pe-4 font-medium text-gray-900">{{ $partner->razao_social }}</td>
-                                        <td class="py-3 pe-4 max-w-[14rem] text-gray-700 truncate" title="{{ $partner->endereco }}">{{ $partner->endereco ? \Illuminate\Support\Str::limit($partner->endereco, 48) : '—' }}</td>
-                                        <td class="py-3 pe-4 text-gray-700">{{ $partner->cidade ?: '—' }}</td>
-                                        <td class="py-3 pe-4 text-gray-700 font-mono">{{ $partner->uf ?: '—' }}</td>
-                                        <td class="py-3 pe-4 text-gray-700">{{ $partner->category?->name ?? '—' }}</td>
-                                        <td class="py-3 pe-4 text-gray-700">
+                                    <tr class="align-middle">
+                                        <td class="py-2.5 pe-4 font-medium text-gray-900">{{ $partner->razao_social }}</td>
+                                        <td class="py-2.5 pe-4 font-mono text-gray-600">{{ $partner->cnpj_formatado ?? '—' }}</td>
+                                        <td class="py-2.5 pe-4 text-gray-600">{{ $partner->cidade ?: '—' }}</td>
+                                        <td class="py-2.5 pe-4 font-mono text-gray-600">{{ $partner->uf ?: '—' }}</td>
+                                        <td class="py-2.5 pe-4">
                                             @if ($partner->ativo)
-                                                <span class="text-green-700 font-medium">Sim</span>
+                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Sim</span>
                                             @else
-                                                <span class="text-gray-500">Não</span>
+                                                <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">Não</span>
                                             @endif
                                         </td>
-                                        <td class="py-3 pe-4 text-gray-700">{{ $partner->email ?: '—' }}</td>
-                                        <td class="py-3 pe-4 text-end whitespace-nowrap">
-                                            <a href="{{ route('admin.parceiros.documentos-empresa.index', $partner) }}" class="text-gray-700 hover:text-gray-900 me-3">Docs</a>
-                                            <a href="{{ route('admin.parceiros.edit', $partner) }}" class="text-indigo-600 hover:text-indigo-900 me-3">Editar</a>
-                                            <form action="{{ route('admin.parceiros.destroy', $partner) }}" method="POST" class="inline" onsubmit="return confirm('Remover este parceiro? O acesso ao portal será excluído.');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-800">Excluir</button>
-                                            </form>
+                                        <td class="py-2.5 pe-4">
+                                            @if ($partner->documentacaoEmDia())
+                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Em dia</span>
+                                            @else
+                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">Faltando</span>
+                                            @endif
+                                        </td>
+                                        <td class="py-2.5 pe-4">
+                                            <div class="flex items-center gap-2">
+                                                <x-config-action-btn :href="route('admin.parceiros.show', $partner)" variant="primary">
+                                                    Visualizar
+                                                </x-config-action-btn>
+                                                <x-config-action-btn :href="route('admin.parceiros.edit', $partner)">
+                                                    Editar
+                                                </x-config-action-btn>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

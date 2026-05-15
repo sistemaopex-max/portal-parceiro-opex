@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Gerenciar categoria: {{ $category->name }}
+                Gerenciar categoria: {{ $category->nome }}
             </h2>
             <a href="{{ route('admin.partner-categories.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar à lista</a>
         </div>
@@ -13,7 +13,7 @@
 
         <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden w-fit max-w-full">
             <div class="px-5 py-4 border-b border-gray-100">
-                <h3 class="text-lg font-semibold text-gray-900">{{ $category->name }}</h3>
+                <h3 class="text-lg font-semibold text-gray-900">{{ $category->nome }}</h3>
             </div>
 
             <div class="px-5 py-4">

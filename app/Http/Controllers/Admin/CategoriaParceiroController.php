@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-class PartnerCategoryController extends Controller
+class CategoriaParceiroController extends Controller
 {
     public function __construct()
     {
@@ -21,7 +21,7 @@ class PartnerCategoryController extends Controller
     {
         $categories = PartnerCategory::query()
             ->withCount('partners')
-            ->orderBy('name')
+            ->orderBy('nome')
             ->paginate(15);
 
         return view('admin.partner-categories.index', compact('categories'));
@@ -35,8 +35,8 @@ class PartnerCategoryController extends Controller
     public function store(StorePartnerCategoryRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $validated['slug'] = $this->resolveUniqueSlug(null, $validated['name']);
-        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['slug'] = $this->resolveUniqueSlug(null, $validated['nome']);
+        $validated['ativo'] = $request->boolean('ativo', true);
 
         $category = PartnerCategory::query()->create($validated);
 
@@ -68,7 +68,7 @@ class PartnerCategoryController extends Controller
     public function update(UpdatePartnerCategoryRequest $request, PartnerCategory $partner_category): RedirectResponse
     {
         $validated = $request->validated();
-        $validated['slug'] = $this->resolveUniqueSlug(null, $validated['name'], $partner_category->id);
+        $validated['slug'] = $this->resolveUniqueSlug(null, $validated['nome'], $partner_category->id);
 
         $partner_category->update($validated);
         $partner_category->refresh();
@@ -93,11 +93,11 @@ class PartnerCategoryController extends Controller
             ->with('status', 'Categoria excluída.');
     }
 
-    private function resolveUniqueSlug(?string $slug, string $name, ?int $ignoreId = null): string
+    private function resolveUniqueSlug(?string $slug, ?string $name, ?int $ignoreId = null): string
     {
         $base = $slug !== null && $slug !== ''
             ? Str::slug($slug)
-            : Str::slug($name);
+            : Str::slug($name ?? '');
 
         if ($base === '') {
             $base = 'categoria';
@@ -113,7 +113,7 @@ class PartnerCategoryController extends Controller
                 ->exists()
         ) {
             $suffix++;
-            $candidate = $base.'-'.$suffix;
+            $candidate = $base . '-' . $suffix;
         }
 
         return $candidate;

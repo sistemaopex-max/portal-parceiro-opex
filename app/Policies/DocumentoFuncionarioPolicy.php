@@ -46,6 +46,6 @@ class DocumentoFuncionarioPolicy
 
     private function possuiParceiro(User $user, int $parceiroId): bool
     {
-        return $user->isPartner() && $user->partner?->id === $parceiroId;
+        return $user->isPartner() && $user->currentPartner()?->id === $parceiroId;
     }
 }

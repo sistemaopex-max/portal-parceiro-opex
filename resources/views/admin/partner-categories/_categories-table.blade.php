@@ -28,8 +28,8 @@
                 <tbody class="divide-y divide-gray-100">
                     @foreach ($categories as $category)
                         <tr>
-                            <td class="px-4 py-3 font-medium text-gray-900">{{ $category->name }}</td>
-                            <td class="px-4 py-3">{{ $category->is_active ? 'Sim' : 'Não' }}</td>
+                            <td class="px-4 py-3 font-medium text-gray-900">{{ $category->nome }}</td>
+                            <td class="px-4 py-3">{{ $category->ativo ? 'Sim' : 'Não' }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <x-config-action-btn
@@ -65,7 +65,7 @@
     @endif
 </div>
 
-<x-modal name="nova-categoria" :show="$errors->has('name') || $errors->has('description')" focusable maxWidth="lg">
+<x-modal name="nova-categoria" :show="$errors->has('nome') || $errors->has('descricao')" focusable maxWidth="lg">
     <form method="POST" action="{{ route('admin.partner-categories.store') }}" class="p-6">
         @csrf
 
@@ -74,34 +74,34 @@
 
         <div class="mt-4 space-y-4">
             <div>
-                <x-input-label for="name-nova-categoria" value="Nome" />
+                <x-input-label for="nome-nova-categoria" value="Nome" />
                 <x-text-input
-                    id="name-nova-categoria"
-                    name="name"
+                    id="nome-nova-categoria"
+                    name="nome"
                     type="text"
                     class="block mt-1 w-full"
-                    :value="old('name')"
+                    :value="old('nome')"
                     required
                     autofocus
                 />
-                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                <x-input-error class="mt-2" :messages="$errors->get('nome')" />
             </div>
 
             <div>
-                <x-input-label for="description-nova-categoria" value="Descrição (opcional)" />
+                <x-input-label for="descricao-nova-categoria" value="Descrição (opcional)" />
                 <textarea
-                    id="description-nova-categoria"
-                    name="description"
+                    id="descricao-nova-categoria"
+                    name="descricao"
                     rows="3"
                     class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                >{{ old('description') }}</textarea>
-                <x-input-error class="mt-2" :messages="$errors->get('description')" />
+                >{{ old('descricao') }}</textarea>
+                <x-input-error class="mt-2" :messages="$errors->get('descricao')" />
             </div>
 
             <div class="flex items-center gap-2">
-                <input type="hidden" name="is_active" value="0">
-                <input id="is_active-nova-categoria" type="checkbox" name="is_active" value="1" @checked((string) old('is_active', '1') === '1')>
-                <x-input-label for="is_active-nova-categoria" value="Categoria ativa" class="!mb-0" />
+                <input type="hidden" name="ativo" value="0">
+                <input id="ativo-nova-categoria" type="checkbox" name="ativo" value="1" @checked((string) old('ativo', '1') === '1')>
+                <x-input-label for="ativo-nova-categoria" value="Categoria ativa" class="!mb-0" />
             </div>
         </div>
 

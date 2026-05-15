@@ -38,7 +38,7 @@
 
     <div>
         <x-input-label for="cnpj" value="CNPJ (opcional)" />
-        <x-text-input id="cnpj" name="cnpj" type="text" class="block mt-1 w-full font-mono" :value="old('cnpj', $partner?->cnpj)" maxlength="18" />
+        <x-text-input id="cnpj" name="cnpj" type="text" class="block mt-1 w-full font-mono" :value="old('cnpj', \App\Models\Partner::formatarCnpj($partner?->cnpj))" maxlength="18" />
         <x-input-error class="mt-2" :messages="$errors->get('cnpj')" />
     </div>
 
@@ -72,7 +72,7 @@
             <option value="" disabled @selected(old('categoria_id', $partner?->categoria_id) === null)>Selecione…</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->id }}" @selected((string) old('categoria_id', $partner?->categoria_id) === (string) $category->id)>
-                    {{ $category->name }}@if (! $category->is_active) (inativa)@endif
+                    {{ $category->nome }}@if (! $category->ativo) (inativa)@endif
                 </option>
             @endforeach
         </select>

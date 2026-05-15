@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Funcionario extends Model
 {
@@ -23,13 +24,47 @@ class Funcionario extends Model
         'parceiro_id',
         'funcao_funcionario_id',
         'nome',
+        'slug',
         'cpf',
+        'data_nascimento',
         'documentacao_em_dia',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Funcionario $f) {
+            if (empty($f->slug)) {
+                $f->slug = static::gerarSlugUnico($f);
+            }
+        });
+    }
+
+    public static function gerarSlugUnico(Funcionario $f): string
+    {
+        $words = preg_split('/\s+/', trim($f->nome ?? 'funcionario'));
+        $abrev = count($words) > 1
+            ? $words[0] . ' ' . $words[count($words) - 1]
+            : $words[0];
+        $base = Str::slug($abrev);
+        $slug = $base;
+        $i = 2;
+
+        while (static::query()->where('slug', $slug)->where('id', '!=', $f->id ?? 0)->exists()) {
+            $slug = $base . '-' . $i++;
+        }
+
+        return $slug;
+    }
 
     protected function casts(): array
     {
         return [
+            'data_nascimento' => 'date',
             'documentacao_em_dia' => 'boolean',
         ];
     }

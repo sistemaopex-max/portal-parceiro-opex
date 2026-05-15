@@ -25,7 +25,7 @@
                         @if (auth()->user()->partner->email)
                             <p><span class="text-gray-600">E-mail:</span> {{ auth()->user()->partner->email }}</p>
                         @endif
-                        <p><span class="text-gray-600">Categoria:</span> {{ auth()->user()->partner->category->name }}</p>
+                        <p><span class="text-gray-600">Categoria:</span> {{ auth()->user()->partner->category->nome }}</p>
                     </div>
                 </div>
             @endif

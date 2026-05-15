@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
-class PartnerController extends Controller
+class ParceiroController extends Controller
 {
     public function __construct()
     {
@@ -24,7 +24,7 @@ class PartnerController extends Controller
 
         $busca = trim((string) $request->input('busca', ''));
         if ($busca !== '') {
-            $like = '%'.addcslashes($busca, '%_\\').'%';
+            $like = '%' . addcslashes($busca, '%_\\') . '%';
             $query->where(function ($q) use ($like) {
                 $q->where('razao_social', 'like', $like)
                     ->orWhere('email', 'like', $like)
@@ -44,23 +44,39 @@ class PartnerController extends Controller
         }
 
         $partners = $query
+            ->with([
+                'category',
+                'documentosEmpresa.tipo',
+                'funcionarios',
+            ])
             ->orderBy('razao_social')
             ->paginate(15)
             ->withQueryString();
 
-        $filterCategories = PartnerCategory::query()->orderBy('name')->get();
+        $filterCategories = PartnerCategory::query()->orderBy('nome')->get();
 
         return view('admin.partners.index', compact('partners', 'filterCategories'));
+    }
+
+    public function show(Partner $partner): View
+    {
+        $partner->load([
+            'documentosEmpresa.tipo',
+            'funcionarios.funcao',
+            'funcionarios.documentos.tipo',
+        ]);
+
+        return view('admin.partners.show', compact('partner'));
     }
 
     public function edit(Partner $partner): View
     {
         $categories = PartnerCategory::query()
             ->where(function ($query) use ($partner) {
-                $query->where('is_active', true)
+                $query->where('ativo', true)
                     ->orWhere('id', $partner->categoria_id);
             })
-            ->orderBy('name')
+            ->orderBy('nome')
             ->get();
 
         $partner->load('user');

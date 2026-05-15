@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\StatusDocumento;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class DocumentoFuncionario extends Model
 {
@@ -14,14 +15,27 @@ class DocumentoFuncionario extends Model
 
     public const UPDATED_AT = 'modificado_em';
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (DocumentoFuncionario $d) {
+            if (empty($d->uuid)) {
+                $d->uuid = Str::uuid()->toString();
+            }
+        });
+    }
+
     protected $fillable = [
+        'uuid',
         'funcionario_id',
         'tipo_documento_funcionario_id',
         'arquivo_disco',
         'arquivo_caminho',
-        'arquivo_nome_original',
         'arquivo_mime',
-        'arquivo_tamanho',
         'validade',
         'status',
         'validado_por_id',

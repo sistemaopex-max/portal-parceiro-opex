@@ -21,7 +21,7 @@ class FuncionarioController extends Controller
 
     public function index(): View
     {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if($partner === null, 404);
 
         $funcionarios = $partner->funcionarios()
@@ -34,11 +34,11 @@ class FuncionarioController extends Controller
 
     public function create(): View
     {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if($partner === null, 404);
 
         $funcoes = FuncaoFuncionario::query()
-            ->where('partner_category_id', $partner->categoria_id)
+            ->where('categoria_id', $partner->categoria_id)
             ->where('ativo', true)
             ->orderBy('nome')
             ->get();
@@ -48,7 +48,7 @@ class FuncionarioController extends Controller
 
     public function store(StoreFuncionarioRequest $request): RedirectResponse
     {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if($partner === null, 404);
 
         $funcionario = $partner->funcionarios()->create($request->validated());
@@ -62,11 +62,11 @@ class FuncionarioController extends Controller
 
     public function edit(Funcionario $funcionario): View
     {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if($partner === null || $funcionario->parceiro_id !== $partner->id, 404);
 
         $funcoes = FuncaoFuncionario::query()
-            ->where('partner_category_id', $partner->categoria_id)
+            ->where('categoria_id', $partner->categoria_id)
             ->where(function ($query) use ($funcionario) {
                 $query->ativos()
                     ->orWhere('id', $funcionario->funcao_funcionario_id);
@@ -79,7 +79,7 @@ class FuncionarioController extends Controller
 
     public function update(UpdateFuncionarioRequest $request, Funcionario $funcionario): RedirectResponse
     {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if($partner === null || $funcionario->parceiro_id !== $partner->id, 404);
 
         $funcionario->update($request->validated());
@@ -93,7 +93,7 @@ class FuncionarioController extends Controller
 
     public function destroy(Funcionario $funcionario): RedirectResponse
     {
-        $partner = auth()->user()->partner;
+        $partner = auth()->user()->currentPartner();
         abort_if($partner === null || $funcionario->parceiro_id !== $partner->id, 404);
 
         $funcionario->delete();

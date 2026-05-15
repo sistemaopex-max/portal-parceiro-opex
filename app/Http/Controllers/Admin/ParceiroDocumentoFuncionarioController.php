@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class PartnerDocumentoFuncionarioController extends Controller
+class ParceiroDocumentoFuncionarioController extends Controller
 {
     public function __construct(
         private GeradorSlots $geradorSlots,
@@ -49,9 +49,17 @@ class PartnerDocumentoFuncionarioController extends Controller
             'Arquivo não encontrado no armazenamento.'
         );
 
-        return Storage::disk($documento_funcionario->arquivo_disco)->download(
-            $documento_funcionario->arquivo_caminho,
-            $documento_funcionario->arquivo_nome_original ?? 'documento'
+        $disk = Storage::disk($documento_funcionario->arquivo_disco);
+        $mime = $documento_funcionario->arquivo_mime ?: ($disk->mimeType($documento_funcionario->arquivo_caminho) ?: 'application/octet-stream');
+        $filename = basename($documento_funcionario->arquivo_caminho);
+
+        return response()->stream(
+            fn () => fpassthru($disk->readStream($documento_funcionario->arquivo_caminho)),
+            200,
+            [
+                'Content-Type' => $mime,
+                'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            ]
         );
     }
 
@@ -68,7 +76,7 @@ class PartnerDocumentoFuncionarioController extends Controller
         $funcionario = $documento_funcionario->funcionario()->with('parceiro')->firstOrFail();
 
         return redirect()
-            ->route('admin.parceiros.funcionarios.documentos-funcionario.index', [$funcionario->parceiro, $funcionario])
+            ->route('admin.parceiros.funcionarios.documentos.index', [$funcionario->parceiro, $funcionario])
             ->with('status', 'Documento atualizado.');
     }
 }

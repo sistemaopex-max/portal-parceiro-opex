@@ -10,7 +10,7 @@ class StoreFuncionarioRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isPartner() === true && $this->user()->partner !== null;
+        return $this->user()?->isPartner() === true && $this->user()->currentPartner() !== null;
     }
 
     protected function prepareForValidation(): void
@@ -26,17 +26,18 @@ class StoreFuncionarioRequest extends FormRequest
      */
     public function rules(): array
     {
-        $partner = $this->user()->partner;
+        $partner = $this->user()->currentPartner();
         $parceiroId = $partner->id;
         $categoriaId = $partner->categoria_id;
 
         return [
             'nome' => ['required', 'string', 'max:255'],
+            'data_nascimento' => ['nullable', 'date', 'before:today'],
             'funcao_funcionario_id' => [
                 'required',
                 Rule::exists('funcoes_funcionario', 'id')->where(fn ($q) => $q
                     ->where('ativo', true)
-                    ->where('partner_category_id', $categoriaId)),
+                    ->where('categoria_id', $categoriaId)),
             ],
             'cpf' => [
                 'required',
@@ -54,6 +55,7 @@ class StoreFuncionarioRequest extends FormRequest
     {
         return [
             'nome' => 'nome',
+            'data_nascimento' => 'data de nascimento',
             'funcao_funcionario_id' => 'função',
             'cpf' => 'CPF',
         ];

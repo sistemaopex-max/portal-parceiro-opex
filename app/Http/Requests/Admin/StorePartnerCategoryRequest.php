@@ -17,9 +17,9 @@ class StorePartnerCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:10000'],
-            'is_active' => ['nullable', 'boolean'],
+            'nome' => ['required', 'string', 'max:255'],
+            'descricao' => ['nullable', 'string', 'max:10000'],
+            'ativo' => ['nullable', 'boolean'],
         ];
     }
 
@@ -29,8 +29,8 @@ class StorePartnerCategoryRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'nome',
-            'description' => 'descrição',
+            'nome' => 'nome',
+            'descricao' => 'descrição',
         ];
     }
 }

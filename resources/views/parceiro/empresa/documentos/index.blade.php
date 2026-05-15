@@ -10,7 +10,7 @@
 
         <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden">
             <div class="p-6 text-gray-900 space-y-4">
-                <p class="text-sm text-gray-600">Envie os arquivos exigidos para a categoria <strong>{{ $partner->category?->name }}</strong>. A validade informada será conferida pelo administrador.</p>
+                <p class="text-sm text-gray-600">Envie os arquivos exigidos para a categoria <strong>{{ $partner->category?->nome }}</strong>. A validade informada será conferida pelo administrador.</p>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 text-sm">
                         <thead>
