@@ -16,6 +16,12 @@ export default {
         '!bg-green-600',
         'hover:!bg-green-500',
         'focus:!ring-green-500',
+        'bg-marino/10',
+        'bg-marino/15',
+        'text-marino-dark',
+        'border-marino-dark',
+        'hover:text-marino-dark',
+        'focus:border-marino-dark',
     ],
 
     theme: {

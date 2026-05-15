@@ -1,26 +1,95 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Painel administrativo
-        </h2>
+        <x-page-heading title="Painel administrativo" subtitle="Bem-vindo(a), {{ auth()->user()->name }}" />
     </x-slot>
 
-    <div class="space-y-6">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900 space-y-2">
-                <p class="text-lg font-medium">Olá, {{ auth()->user()->name }}.</p>
-                <p class="text-gray-600">Área restrita a administradores.</p>
-            </div>
+    <div class="space-y-8">
+
+        {{-- Stat cards --}}
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <x-stat-card
+                label="Parceiros ativos"
+                :value="$totalParceiros"
+                color="blue"
+                :href="route('admin.parceiros.index')"
+            >
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.09 9.09 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                </svg>
+            </x-stat-card>
+
+            <x-stat-card
+                label="Docs em dia"
+                :value="$parceirosDia . ' / ' . $totalParceiros"
+                color="green"
+            >
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </x-stat-card>
+
+            <x-stat-card
+                label="Docs pendentes"
+                :value="$docsPendentes"
+                :color="$docsPendentes > 0 ? 'yellow' : 'gray'"
+                sub="Aguardando validação"
+            >
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </x-stat-card>
+
+            <x-stat-card
+                label="Convites ativos"
+                :value="$convitesPendentes"
+                color="blue"
+                :href="route('admin.invitations.index')"
+            >
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+            </x-stat-card>
         </div>
-        <div class="grid gap-4 sm:grid-cols-2">
-            <a href="{{ route('admin.categorias.index') }}" class="block bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:ring-2 hover:ring-indigo-500 transition">
-                <h3 class="text-lg font-semibold text-gray-900">Categorias</h3>
-                <p class="mt-2 text-sm text-gray-600">Cadastre categorias, documentos da empresa, funções e documentos por função.</p>
+
+        {{-- Ações rápidas --}}
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <a href="{{ route('admin.parceiros.index') }}" class="group flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-marino/30">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-marino/10 text-marino group-hover:bg-marino group-hover:text-white transition">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-900">Gerenciar parceiros</p>
+                    <p class="mt-0.5 text-sm text-gray-500">Ver lista, validar documentos</p>
+                </div>
             </a>
-            <a href="{{ route('admin.parceiros.index') }}" class="block bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 hover:ring-2 hover:ring-indigo-500 transition">
-                <h3 class="text-lg font-semibold text-gray-900">Parceiros</h3>
-                <p class="mt-2 text-sm text-gray-600">Gerencie empresas parceiras e valide documentos enviados.</p>
+
+            <a href="{{ route('admin.categorias.index') }}" class="group flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-marino/30">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-marino/10 text-marino group-hover:bg-marino group-hover:text-white transition">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-900">Categorias</p>
+                    <p class="mt-0.5 text-sm text-gray-500">Documentos e funções exigidos</p>
+                </div>
+            </a>
+
+            <a href="{{ route('admin.invitations.create') }}" class="group flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md hover:border-marino/30">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-marino/10 text-marino group-hover:bg-marino group-hover:text-white transition">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-900">Novo convite</p>
+                    <p class="mt-0.5 text-sm text-gray-500">Convidar empresa parceira</p>
+                </div>
             </a>
         </div>
+
     </div>
 </x-app-layout>

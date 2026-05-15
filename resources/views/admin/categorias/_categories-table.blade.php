@@ -14,22 +14,28 @@
     </div>
 
     @if ($categories->isEmpty())
-        <p class="text-sm text-gray-500">Nenhuma categoria cadastrada ainda.</p>
+        <x-empty-state title="Nenhuma categoria cadastrada" description="Crie a primeira categoria usando o botão acima." />
     @else
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 py-2 text-left font-medium text-gray-700">Nome</th>
-                        <th class="px-4 py-2 text-left font-medium text-gray-700">Ativa</th>
-                        <th class="px-4 py-2 text-left font-medium text-gray-700">Ações</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Nome</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Ativa</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Ações</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @foreach ($categories as $category)
-                        <tr>
+                        <tr class="transition hover:bg-gray-50">
                             <td class="px-4 py-3 font-medium text-gray-900">{{ $category->nome }}</td>
-                            <td class="px-4 py-3">{{ $category->ativo ? 'Sim' : 'Não' }}</td>
+                            <td class="px-4 py-3">
+                                @if ($category->ativo)
+                                    <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Sim</span>
+                                @else
+                                    <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">Não</span>
+                                @endif
+                            </td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <x-config-action-btn
@@ -93,7 +99,7 @@
                     id="descricao-nova-categoria"
                     name="descricao"
                     rows="3"
-                    class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    class="block mt-1 w-full border-gray-300 focus:border-marino focus:ring-marino rounded-md shadow-sm"
                 >{{ old('descricao') }}</textarea>
                 <x-input-error class="mt-2" :messages="$errors->get('descricao')" />
             </div>

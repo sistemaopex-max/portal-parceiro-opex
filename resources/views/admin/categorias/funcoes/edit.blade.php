@@ -1,42 +1,24 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar função — {{ $funcao->nome }}
-            </h2>
-            <a href="{{ route('admin.categorias.funcoes.index', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar às funções</a>
-        </div>
+        <x-page-heading
+            title="Editar função: {{ $funcao->nome }}"
+            :back="route('admin.categorias.funcoes.index', $category)"
+            back-label="Funções"
+        />
     </x-slot>
 
-    <div class="space-y-6 max-w-4xl">
-        <p class="text-sm text-gray-600">Categoria: <span class="font-medium">{{ $category->nome }}</span></p>
-
+    <div class="max-w-2xl space-y-6">
         @include('admin.categorias._category-alerts')
 
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-            <form method="POST" action="{{ route('admin.categorias.funcoes.update', [$category, $funcao]) }}" class="space-y-6">
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <p class="mb-6 text-sm text-gray-600">
+                Categoria: <span class="font-medium text-gray-900">{{ $category->nome }}</span>
+            </p>
+
+            <form method="POST" action="{{ route('admin.categorias.funcoes.update', [$category, $funcao]) }}">
                 @csrf
                 @method('PUT')
-                <input type="hidden" name="funcao_id" value="{{ $funcao->id }}">
-
-                <div>
-                    <x-input-label for="nome" value="Nome da função" />
-                    <x-text-input id="nome" name="nome" type="text" class="block mt-1 w-full" :value="old('nome', $funcao->nome)" required />
-                    <x-input-error class="mt-2" :messages="$errors->get('nome')" />
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <input type="hidden" name="ativo" value="0">
-                    <input id="ativo" type="checkbox" name="ativo" value="1" @checked(old('ativo', $funcao->ativo))>
-                    <x-input-label for="ativo" value="Função ativa" class="!mb-0" />
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2">
-                    <x-config-action-btn type="submit" variant="primary">Salvar</x-config-action-btn>
-                    <x-config-action-btn :href="route('admin.categorias.funcoes.index', $category)" variant="default">
-                        Cancelar
-                    </x-config-action-btn>
-                </div>
+                @include('admin.categorias._form-funcao-edit', ['category' => $category, 'funcao' => $funcao])
             </form>
         </div>
     </div>

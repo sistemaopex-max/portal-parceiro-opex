@@ -1,17 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar categoria: {{ $category->nome }}
-            </h2>
-            <a href="{{ route('admin.categorias.show', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar</a>
-        </div>
+        <x-page-heading
+            title="Editar categoria: {{ $category->nome }}"
+            :back="route('admin.categorias.show', $category)"
+            back-label="Categoria"
+        />
     </x-slot>
 
-    <div class="space-y-6 max-w-4xl">
+    <div class="max-w-2xl space-y-6">
         @include('admin.categorias._category-alerts')
 
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <form method="POST" action="{{ route('admin.categorias.update', $category) }}">
                 @csrf
                 @method('PUT')

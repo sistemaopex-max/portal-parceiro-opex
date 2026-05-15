@@ -32,6 +32,22 @@ class CategoriaDocumentoFuncionarioController extends Controller
         ]);
     }
 
+    public function edit(
+        PartnerCategory $partner_category,
+        FuncaoFuncionario $funcao,
+        TipoDocumentoFuncionario $tipo_documento_funcionario,
+    ): View {
+        $this->authorize('update', $partner_category);
+        $this->assertFuncaoBelongsToCategory($partner_category, $funcao);
+        $this->assertTipoBelongsToFuncao($funcao, $tipo_documento_funcionario);
+
+        return view('admin.categorias.funcoes.documentos.edit', [
+            'category' => $partner_category,
+            'funcao' => $funcao,
+            'tipo' => $tipo_documento_funcionario,
+        ]);
+    }
+
     public function store(Request $request, PartnerCategory $partner_category, FuncaoFuncionario $funcao): RedirectResponse
     {
         $this->authorize('update', $partner_category);
@@ -80,16 +96,24 @@ class CategoriaDocumentoFuncionarioController extends Controller
             'ativo' => ['nullable', 'boolean'],
         ]);
 
-        $tipo_documento_funcionario->update([
+        $payload = [
             'nome' => $data['nome'],
             'ativo' => $request->boolean('ativo'),
-        ]);
+        ];
+
+        if ($tipo_documento_funcionario->nome !== $data['nome']) {
+            $payload['slug'] = TipoDocumentoFuncionario::gerarSlugUnico($data['nome'], $tipo_documento_funcionario->id);
+        }
+
+        $tipo_documento_funcionario->update($payload);
 
         foreach ($funcao->funcionarios as $funcionario) {
             $this->geradorSlots->garantirSlotsFuncionario($funcionario);
         }
 
-        return back()->with('status', 'Documento atualizado.');
+        return redirect()
+            ->route('admin.categorias.funcoes.docs.index', [$partner_category, $funcao])
+            ->with('status', 'Documento atualizado.');
     }
 
     public function destroy(

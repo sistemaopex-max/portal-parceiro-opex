@@ -68,7 +68,7 @@
 
     <div>
         <x-input-label for="categoria_id" value="Categoria" />
-        <select id="categoria_id" name="categoria_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+        <select id="categoria_id" name="categoria_id" class="block mt-1 w-full border-gray-300 focus:border-marino focus:ring-marino rounded-md shadow-sm" required>
             <option value="" disabled @selected(old('categoria_id', $partner?->categoria_id) === null)>Selecione…</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->id }}" @selected((string) old('categoria_id', $partner?->categoria_id) === (string) $category->id)>
@@ -81,7 +81,7 @@
 
     <div class="flex items-center gap-2">
         <input type="hidden" name="ativo" value="0">
-        <input id="ativo" type="checkbox" name="ativo" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" @checked(filter_var(old('ativo', $partner->ativo), FILTER_VALIDATE_BOOLEAN))>
+        <input id="ativo" type="checkbox" name="ativo" value="1" class="rounded border-gray-300 text-marino shadow-sm focus:ring-marino" @checked(filter_var(old('ativo', $partner->ativo), FILTER_VALIDATE_BOOLEAN))>
         <x-input-label for="ativo" value="Parceiro ativo" class="!mb-0" />
     </div>
     <x-input-error class="mt-2" :messages="$errors->get('ativo')" />

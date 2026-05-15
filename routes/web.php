@@ -26,7 +26,15 @@ Route::post('/convite/{token}', [RegistroConviteController::class, 'store'])->na
 
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
+        return view('admin.dashboard', [
+            'totalParceiros'    => \App\Models\Partner::where('ativo', true)->count(),
+            'docsPendentes'     => \App\Models\DocumentoEmpresa::where('status', 'pendente')->count()
+                                 + \App\Models\DocumentoFuncionario::where('status', 'pendente')->count(),
+            'convitesPendentes' => \App\Models\PartnerInvitation::whereNull('usado_em')
+                                     ->where('expira_em', '>', now())->count(),
+            'parceirosDia'      => \App\Models\Partner::where('ativo', true)->get()
+                                     ->filter(fn ($p) => $p->documentacaoEmDia())->count(),
+        ]);
     })->name('dashboard');
 
     Route::resource('categorias', CategoriaParceiroController::class)
@@ -60,6 +68,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
             ->name('funcoes.docs.index');
         Route::post('funcoes/{funcao}/docs', [CategoriaDocumentoFuncionarioController::class, 'store'])
             ->name('funcoes.docs.store');
+        Route::get('funcoes/{funcao}/docs/{tipo_documento_funcionario}/edit', [CategoriaDocumentoFuncionarioController::class, 'edit'])
+            ->name('funcoes.docs.edit');
         Route::put('funcoes/{funcao}/docs/{tipo_documento_funcionario}', [CategoriaDocumentoFuncionarioController::class, 'update'])
             ->name('funcoes.docs.update');
         Route::delete('funcoes/{funcao}/docs/{tipo_documento_funcionario}', [CategoriaDocumentoFuncionarioController::class, 'destroy'])
@@ -103,7 +113,17 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
 Route::middleware(['auth', 'verified', 'partner', 'set.current.partner'])->prefix('parceiro')->name('parceiro.')->group(function () {
     Route::get('/dashboard', function () {
-        return view('parceiro.dashboard');
+        $partner = auth()->user()->currentPartner();
+        $docsEmpresa   = $partner?->documentosEmpresa()->with('tipo')->doTipoAtivo()->get() ?? collect();
+        $funcionarios  = $partner?->funcionarios()->with('documentos')->get() ?? collect();
+        return view('parceiro.dashboard', [
+            'partner'          => $partner,
+            'totalDocs'        => $docsEmpresa->count(),
+            'docsEnviados'     => $docsEmpresa->filter(fn ($d) => $d->arquivo_caminho)->count(),
+            'docsPendentes'    => $docsEmpresa->filter(fn ($d) => $d->status->value === 'pendente')->count(),
+            'totalFuncionarios'=> $funcionarios->count(),
+            'funcDia'          => $funcionarios->filter(fn ($f) => $f->documentacao_em_dia)->count(),
+        ]);
     })->name('dashboard');
 
     // Documentos da empresa

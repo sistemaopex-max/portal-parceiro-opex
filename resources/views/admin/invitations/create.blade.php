@@ -1,13 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Novo convite de cadastro</h2>
+        <x-page-heading
+            title="Novo convite de cadastro"
+            :back="route('admin.invitations.index')"
+            back-label="Convites"
+        />
     </x-slot>
 
     <div class="space-y-4">
-        <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
-            <a href="{{ route('admin.invitations.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Convites</a>
-
-            <form method="POST" action="{{ route('admin.invitations.store') }}" class="space-y-5 max-w-lg">
+        <div class="max-w-lg overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <form method="POST" action="{{ route('admin.invitations.store') }}" class="space-y-5">
                 @csrf
 
                 <div>
@@ -18,7 +20,7 @@
                         name="email"
                         value="{{ old('email') }}"
                         required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm @error('email') border-red-300 @enderror"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-marino focus:ring-marino text-sm @error('email') border-red-300 @enderror"
                         placeholder="email@empresa.com"
                     >
                     @error('email')
@@ -32,7 +34,7 @@
                         id="categoria_id"
                         name="categoria_id"
                         required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm @error('categoria_id') border-red-300 @enderror"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-marino focus:ring-marino text-sm @error('categoria_id') border-red-300 @enderror"
                     >
                         <option value="">Selecione uma categoria</option>
                         @foreach ($categories as $category)

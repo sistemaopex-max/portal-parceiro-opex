@@ -1,10 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Novo funcionário</h2>
+        <x-page-heading
+            title="Novo funcionário"
+            :back="route('parceiro.funcionarios.index')"
+            back-label="Funcionários"
+        />
     </x-slot>
 
     <div class="max-w-2xl">
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <form method="POST" action="{{ route('parceiro.funcionarios.store') }}">
                 @csrf
                 @include('parceiro.funcionarios._form', [

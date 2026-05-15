@@ -1,17 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Editar filial — {{ $partner->razao_social }}</h2>
+        <x-page-heading
+            title="Editar filial — {{ $partner->razao_social }}"
+            :back="route('parceiro.filiais.index')"
+            back-label="Filiais"
+        />
     </x-slot>
 
-    <div class="space-y-4">
-        <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
-            <a href="{{ route('parceiro.filiais.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Filiais</a>
-
-            <form method="POST" action="{{ route('parceiro.filiais.update', $partner) }}" class="space-y-5 max-w-lg">
+    <div class="max-w-lg">
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <form method="POST" action="{{ route('parceiro.filiais.update', $partner) }}" class="space-y-5">
                 @csrf @method('PUT')
                 @include('parceiro.filiais._form', ['filial' => $partner])
-
-                <div class="flex gap-3">
+                <div class="flex gap-3 pt-2">
                     <x-config-action-btn type="submit" variant="primary">Salvar alterações</x-config-action-btn>
                     <x-config-action-btn :href="route('parceiro.filiais.index')">Cancelar</x-config-action-btn>
                 </div>

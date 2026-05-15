@@ -1,16 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Documentos — {{ $funcao->nome }}
-            </h2>
-            <a href="{{ route('admin.categorias.funcoes.index', $category) }}" class="text-sm text-indigo-600 hover:text-indigo-900">← Voltar às funções</a>
-        </div>
+        <x-page-heading
+            title="Documentos de funcionário — {{ $funcao->nome }}"
+            :subtitle="'Categoria: ' . $category->nome"
+            :back="route('admin.categorias.funcoes.index', $category)"
+            back-label="Funções"
+        />
     </x-slot>
 
-    <div class="space-y-6 max-w-4xl">
-        <p class="text-sm text-gray-600">Categoria: <span class="font-medium">{{ $category->nome }}</span></p>
-
+    <div class="max-w-4xl space-y-6">
         @include('admin.categorias._category-alerts')
 
         @include('admin.categorias._tipo-documento-table', [
@@ -19,6 +17,7 @@
             'routeBase' => 'admin.categorias.funcoes.docs',
             'routeParams' => [$category, $funcao],
             'modalPrefix' => 'documento-funcionario-'.$funcao->id,
+            'editPageRoute' => 'admin.categorias.funcoes.docs.edit',
         ])
     </div>
 </x-app-layout>

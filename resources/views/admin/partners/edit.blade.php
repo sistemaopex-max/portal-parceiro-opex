@@ -1,12 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Editar parceiro
-        </h2>
+        <x-page-heading
+            title="Editar parceiro"
+            :back="route('admin.parceiros.show', $partner)"
+            back-label="Voltar"
+        />
     </x-slot>
 
     <div class="max-w-2xl">
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <form method="POST" action="{{ route('admin.parceiros.update', $partner) }}">
                 @csrf
                 @method('PUT')

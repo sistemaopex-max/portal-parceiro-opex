@@ -22,7 +22,7 @@
             name="nome"
             value="{{ old('nome', $funcionario?->nome) }}"
             required
-            class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('nome') border-red-300 @enderror"
+            class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-marino focus:ring-marino @error('nome') border-red-300 @enderror"
         >
         @error('nome')
             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -38,7 +38,7 @@
             name="data_nascimento"
             value="{{ old('data_nascimento', $funcionario?->data_nascimento?->format('Y-m-d')) }}"
             max="{{ now()->subDay()->format('Y-m-d') }}"
-            class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('data_nascimento') border-red-300 @enderror"
+            class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-marino focus:ring-marino @error('data_nascimento') border-red-300 @enderror"
         >
         @error('data_nascimento')
             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -67,7 +67,7 @@
             maxlength="14"
             placeholder="000.000.000-00"
             value="{{ old('cpf') ? preg_replace('/^(\d{3})(\d{3})(\d{3})(\d{2})$/', '$1.$2.$3-$4', old('cpf')) : ($funcionario?->cpf ? preg_replace('/^(\d{3})(\d{3})(\d{3})(\d{2})$/', '$1.$2.$3-$4', $funcionario->cpf) : '') }}"
-            :class="cpfError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
+            :class="cpfError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-marino focus:ring-marino'"
             class="block w-full rounded-md text-sm shadow-sm @error('cpf') border-red-300 @enderror"
             x-on:input="$event.target.value = mask($event.target.value); $refs.cpfHidden.value = getRaw($event.target.value); cpfError = ''"
         >
@@ -91,7 +91,7 @@
             id="funcao_funcionario_id"
             name="funcao_funcionario_id"
             required
-            class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('funcao_funcionario_id') border-red-300 @enderror"
+            class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-marino focus:ring-marino @error('funcao_funcionario_id') border-red-300 @enderror"
         >
             <option value="">Selecione uma função</option>
             @foreach ($funcoes as $funcao)

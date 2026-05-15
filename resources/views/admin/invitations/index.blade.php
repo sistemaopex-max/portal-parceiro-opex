@@ -1,46 +1,50 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Convites de cadastro</h2>
+        <x-page-heading title="Convites de cadastro">
+            <x-slot name="actions">
+                <x-config-action-btn :href="route('admin.invitations.create')" variant="primary">
+                    Novo convite
+                </x-config-action-btn>
+            </x-slot>
+        </x-page-heading>
     </x-slot>
 
     <div class="space-y-4">
         @if (session('status'))
-            <div class="p-4 bg-green-50 text-green-800 rounded-md text-sm font-medium">{{ session('status') }}</div>
+            <x-alert>{{ session('status') }}</x-alert>
         @endif
 
-        <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-base font-medium text-gray-900">Convites enviados</h3>
-                <x-config-action-btn :href="route('admin.invitations.create')" variant="primary">
-                    Novo convite
-                </x-config-action-btn>
-            </div>
-
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
             @if ($invitations->isEmpty())
-                <p class="text-sm text-gray-500">Nenhum convite enviado ainda.</p>
+                <x-empty-state
+                    title="Nenhum convite enviado"
+                    description="Envie um convite para uma empresa parceira se cadastrar."
+                >
+                    <x-slot name="actions">
+                        <x-config-action-btn :href="route('admin.invitations.create')" variant="primary">Novo convite</x-config-action-btn>
+                    </x-slot>
+                </x-empty-state>
             @else
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead>
-                            <tr class="text-left text-gray-600">
-                                <th class="py-2 pe-4 font-medium">E-mail</th>
-                                <th class="py-2 pe-4 font-medium">Nome</th>
-                                <th class="py-2 pe-4 font-medium">Categoria</th>
-                                <th class="py-2 pe-4 font-medium">Criado em</th>
-                                <th class="py-2 pe-4 font-medium">Expira em</th>
-                                <th class="py-2 pe-4 font-medium">Status</th>
-                                <th class="py-2 pe-4 font-medium">Ações</th>
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">E-mail</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Categoria</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Criado em</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Expira em</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Status</th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Ações</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @foreach ($invitations as $invitation)
-                                <tr class="align-middle">
-                                    <td class="py-2 pe-4">{{ $invitation->email }}</td>
-                                    <td class="py-2 pe-4 text-gray-600">{{ '—' }}</td>
-                                    <td class="py-2 pe-4">{{ $invitation->category?->nome }}</td>
-                                    <td class="py-2 pe-4 text-gray-500">{{ $invitation->criado_em->format('d/m/Y H:i') }}</td>
-                                    <td class="py-2 pe-4 text-gray-500">{{ $invitation->expira_em->format('d/m/Y H:i') }}</td>
-                                    <td class="py-2 pe-4">
+                                <tr class="transition hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900">{{ $invitation->email }}</td>
+                                    <td class="px-6 py-4 text-gray-600">{{ $invitation->category?->nome }}</td>
+                                    <td class="px-6 py-4 text-gray-500">{{ $invitation->criado_em->format('d/m/Y H:i') }}</td>
+                                    <td class="px-6 py-4 text-gray-500">{{ $invitation->expira_em->format('d/m/Y H:i') }}</td>
+                                    <td class="px-6 py-4">
                                         @if ($invitation->isUsed())
                                             <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">Usado</span>
                                         @elseif ($invitation->isExpired())
@@ -49,7 +53,7 @@
                                             <span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">Pendente</span>
                                         @endif
                                     </td>
-                                    <td class="py-2 pe-4">
+                                    <td class="px-6 py-4 text-right">
                                         <form method="POST" action="{{ route('admin.invitations.destroy', $invitation) }}" class="inline" onsubmit="return confirm('Excluir este convite?');">
                                             @csrf @method('DELETE')
                                             <x-config-action-btn type="submit" variant="danger">Excluir</x-config-action-btn>
@@ -60,8 +64,9 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div>{{ $invitations->links() }}</div>
+                <div class="border-t border-gray-100 px-6 py-4">
+                    {{ $invitations->links() }}
+                </div>
             @endif
         </div>
     </div>

@@ -3,7 +3,7 @@
 <div>
     <label for="razao_social" class="block text-sm font-medium text-gray-700">Razão social <span class="text-red-500">*</span></label>
     <input type="text" id="razao_social" name="razao_social" value="{{ old('razao_social', $filial?->razao_social) }}" required
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm @error('razao_social') border-red-300 @enderror">
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-marino focus:ring-marino text-sm @error('razao_social') border-red-300 @enderror">
     @error('razao_social')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
 </div>
 
@@ -44,7 +44,7 @@
         placeholder="00.000.000/0000-00"
         maxlength="18"
         inputmode="numeric"
-        :class="cnpjError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'"
+        :class="cnpjError ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-marino focus:ring-marino'"
         class="mt-1 block w-full rounded-md text-sm shadow-sm"
         x-on:input="$event.target.value = mask($event.target.value); validate($event.target.value)"
         x-on:blur="validate($event.target.value)"
@@ -56,13 +56,13 @@
     <div>
         <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
         <input type="text" id="telefone" name="telefone" value="{{ old('telefone', $filial?->telefone) }}"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-marino focus:ring-marino text-sm">
         @error('telefone')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
     </div>
     <div>
         <label for="email" class="block text-sm font-medium text-gray-700">E-mail da empresa</label>
         <input type="email" id="email" name="email" value="{{ old('email', $filial?->email) }}"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-marino focus:ring-marino text-sm">
         @error('email')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
     </div>
 </div>
@@ -70,7 +70,7 @@
 <div>
     <label for="endereco" class="block text-sm font-medium text-gray-700">Endereço</label>
     <input type="text" id="endereco" name="endereco" value="{{ old('endereco', $filial?->endereco) }}"
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-marino focus:ring-marino text-sm">
     @error('endereco')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
 </div>
 
@@ -78,13 +78,13 @@
     <div class="col-span-2">
         <label for="cidade" class="block text-sm font-medium text-gray-700">Cidade</label>
         <input type="text" id="cidade" name="cidade" value="{{ old('cidade', $filial?->cidade) }}"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-marino focus:ring-marino text-sm">
         @error('cidade')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
     </div>
     <div>
         <label for="uf" class="block text-sm font-medium text-gray-700">UF</label>
         <input type="text" id="uf" name="uf" value="{{ old('uf', $filial?->uf) }}" maxlength="2" placeholder="SP"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-marino focus:ring-marino text-sm">
         @error('uf')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
     </div>
 </div>
