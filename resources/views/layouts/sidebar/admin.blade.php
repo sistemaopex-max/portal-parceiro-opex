@@ -87,7 +87,4 @@
             </div>
         </div>
     </nav>
-
-    {{-- Footer --}}
-    @include('layouts.sidebar._footer')
 </div>

@@ -11,8 +11,6 @@
         </a>
     </div>
 
-    @include('layouts.sidebar._filial-selector')
-
     {{-- Nav --}}
     <nav class="sidebar-scroll min-h-0 flex-1 overflow-y-auto px-3 py-4" aria-label="Menu principal">
 
@@ -62,6 +60,7 @@
 
     </nav>
 
-    {{-- Footer --}}
-    @include('layouts.sidebar._footer')
+    <div class="relative z-30 shrink-0 overflow-visible border-t border-white/[0.08]">
+        @include('layouts.sidebar._filial-selector', ['position' => 'footer'])
+    </div>
 </div>

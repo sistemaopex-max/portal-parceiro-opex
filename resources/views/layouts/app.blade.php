@@ -28,22 +28,7 @@
                         </svg>
                     </button>
 
-                    {{-- Breadcrumb / nome da página (desktop) --}}
-                    <div class="hidden items-center gap-2 lg:flex">
-                        <span class="text-xs font-medium text-zinc-400">{{ config('app.name', 'Portal') }}</span>
-                        <svg class="h-3.5 w-3.5 text-zinc-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                        </svg>
-                        @isset($header)
-                            @php
-                                preg_match('/title="([^"]+)"/', $header, $m);
-                                $pageTitle = $m[1] ?? '';
-                            @endphp
-                            @if ($pageTitle)
-                                <span class="max-w-xs truncate text-sm font-semibold text-zinc-700">{{ $pageTitle }}</span>
-                            @endif
-                        @endisset
-                    </div>
+                    <x-breadcrumbs :items="$breadcrumbs ?? []" />
                 </div>
 
                 {{-- Direita: user menu --}}

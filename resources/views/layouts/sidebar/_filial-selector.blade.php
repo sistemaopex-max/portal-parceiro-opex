@@ -5,19 +5,17 @@
 @endphp
 
 @if ($currentPartner)
-    <div
-        class="shrink-0 px-4 py-3"
-        @if ($temVariasFiliais)
-            x-data="{ filiaisOpen: false }"
-            @click.outside="filiaisOpen = false"
-        @endif
-    >
+    <div @class(['shrink-0 px-4 py-3'])>
         <p class="mb-2 px-0.5 text-[10px] font-medium uppercase tracking-wider text-white/40">
             Filial selecionada
         </p>
 
         @if ($temVariasFiliais)
-            <div class="relative z-20">
+            <div
+                class="flex flex-col-reverse gap-1"
+                x-data="{ filiaisOpen: false }"
+                @click.outside="filiaisOpen = false"
+            >
                 <button
                     type="button"
                     @click="filiaisOpen = !filiaisOpen"
@@ -36,8 +34,8 @@
                         @endif
                     </div>
                     <svg
-                        class="mt-0.5 h-4 w-4 shrink-0 text-white/70 transition-transform duration-200"
-                        :class="{ 'rotate-180': filiaisOpen }"
+                        class="mt-0.5 h-4 w-4 shrink-0 rotate-180 text-white/70 transition-transform duration-200"
+                        :class="{ '!rotate-0': filiaisOpen }"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -52,30 +50,31 @@
                 <div
                     x-show="filiaisOpen"
                     x-transition:enter="transition ease-out duration-150"
-                    x-transition:enter-start="opacity-0 -translate-y-1"
-                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-100"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
                     x-cloak
-                    class="absolute left-0 right-0 top-full z-30 mt-1 max-h-56 overflow-y-auto rounded-xl bg-marino-600/95 px-2 py-2 shadow-xl ring-1 ring-inset ring-white/[0.08] backdrop-blur-sm"
+                    class="filial-selector-panel max-h-56 space-y-0.5 overflow-y-auto rounded-xl bg-marino-600/95 px-2 py-2 shadow-xl ring-1 ring-inset ring-white/[0.08] backdrop-blur-sm"
                 >
-                    <div class="space-y-0.5">
-                        @foreach ($allFiliais as $filial)
-                            @if ($filial->id !== $currentPartner->id)
-                                <form method="POST" action="{{ route('parceiro.filiais.switch', $filial) }}">
-                                    @csrf
-                                    <button
-                                        type="submit"
-                                        class="filial-option-btn w-full rounded-lg px-2.5 py-2 text-left transition hover:bg-white/[0.10] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
-                                        @click="sidebarOpen = false"
-                                    >
-                                        <span class="filial-option-nome block truncate text-[13px] font-semibold">{{ $filial->razao_social }}</span>
-                                        @if ($filial->local_filial)
-                                            <span class="filial-option-local mt-0.5 block truncate text-xs">{{ $filial->local_filial }}</span>
-                                        @endif
-                                    </button>
-                                </form>
-                            @endif
-                        @endforeach
-                    </div>
+                    @foreach ($allFiliais as $filial)
+                        @if ($filial->id !== $currentPartner->id)
+                            <form method="POST" action="{{ route('parceiro.filiais.switch', $filial) }}">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    class="filial-option-btn w-full rounded-lg px-2.5 py-2 text-left transition hover:bg-white/[0.10] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                                    @click="sidebarOpen = false"
+                                >
+                                    <span class="filial-option-nome block truncate text-[13px] font-semibold">{{ $filial->razao_social }}</span>
+                                    @if ($filial->local_filial)
+                                        <span class="filial-option-local mt-0.5 block truncate text-xs">{{ $filial->local_filial }}</span>
+                                    @endif
+                                </button>
+                            </form>
+                        @endif
+                    @endforeach
                 </div>
             </div>
         @else

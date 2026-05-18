@@ -122,4 +122,11 @@
         @endif
     @endforeach
 
+    @if (request('validar') && $documentos->contains(fn ($d) => $d->uuid === request('validar') && $d->arquivo_caminho))
+        <div
+            x-data
+            x-init="$nextTick(() => $dispatch('open-modal', 'validar-func-{{ request('validar') }}'))"
+        ></div>
+    @endif
+
 </x-app-layout>

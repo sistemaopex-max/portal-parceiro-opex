@@ -18,6 +18,8 @@ export default {
         'hover:text-marino-dark', 'focus:border-marino-dark',
         'from-marino', 'to-marino-700',
         'lg:grid-cols-[260px_minmax(0,1fr)]',
+        'flex-col-reverse',
+        'bottom-full',
     ],
 
     theme: {

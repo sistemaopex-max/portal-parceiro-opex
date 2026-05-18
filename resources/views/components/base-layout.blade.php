@@ -41,7 +41,7 @@
 
             {{-- Sidebar --}}
             <aside
-                class="sidebar-gradient fixed inset-y-0 left-0 z-50 flex h-screen w-[260px] max-w-[85vw] -translate-x-full flex-col shadow-2xl transition-transform duration-200 ease-out lg:static lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none"
+                class="sidebar-gradient fixed inset-y-0 left-0 z-50 flex h-screen w-[260px] max-w-[85vw] -translate-x-full flex-col overflow-visible shadow-2xl transition-transform duration-200 ease-out lg:static lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none"
                 :class="{ 'translate-x-0': sidebarOpen }"
                 aria-label="Navegação lateral"
             >

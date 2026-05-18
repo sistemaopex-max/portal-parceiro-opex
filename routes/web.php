@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DocumentosPendentesController;
 use App\Http\Controllers\Admin\CategoriaDocumentoEmpresaController;
 use App\Http\Controllers\Admin\CategoriaDocumentoFuncionarioController;
 use App\Http\Controllers\Admin\CategoriaFuncaoController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Parceiro\FuncionarioDocumentoController;
 use App\Http\Controllers\ArquivoController;
 use App\Http\Controllers\RegistroConviteController;
 use App\Http\Controllers\ProfileController;
+use App\Enums\StatusDocumento;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -36,6 +38,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
                                      ->filter(fn ($p) => $p->documentacaoEmDia())->count(),
         ]);
     })->name('dashboard');
+
+    Route::get('documentos/pendentes', [DocumentosPendentesController::class, 'index'])
+        ->name('documentos.pendentes');
 
     Route::resource('categorias', CategoriaParceiroController::class)
         ->parameters(['categorias' => 'partner_category']);
@@ -114,15 +119,24 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 Route::middleware(['auth', 'verified', 'partner', 'set.current.partner'])->prefix('parceiro')->name('parceiro.')->group(function () {
     Route::get('/dashboard', function () {
         $partner = auth()->user()->currentPartner();
-        $docsEmpresa   = $partner?->documentosEmpresa()->with('tipo')->doTipoAtivo()->get() ?? collect();
-        $funcionarios  = $partner?->funcionarios()->with('documentos')->get() ?? collect();
+        $docsEmpresa = $partner?->documentosEmpresa()->with('tipo')->doTipoAtivo()->get() ?? collect();
+        $funcionarios = $partner?->funcionarios()
+            ->where('ativo', true)
+            ->get() ?? collect();
+
+        $docNaoValido = static fn ($d) => $d->status !== StatusDocumento::Valido;
+
+        $documentosPendentes = $docsEmpresa->filter($docNaoValido)->count();
+
+        $funcionariosDocumentacaoPendente = $funcionarios
+            ->filter(static fn ($f) => ! $f->documentacao_em_dia)
+            ->count();
+
         return view('parceiro.dashboard', [
-            'partner'          => $partner,
-            'totalDocs'        => $docsEmpresa->count(),
-            'docsEnviados'     => $docsEmpresa->filter(fn ($d) => $d->arquivo_caminho)->count(),
-            'docsPendentes'    => $docsEmpresa->filter(fn ($d) => $d->status->value === 'pendente')->count(),
-            'totalFuncionarios'=> $funcionarios->count(),
-            'funcDia'          => $funcionarios->filter(fn ($f) => $f->documentacao_em_dia)->count(),
+            'partner' => $partner,
+            'documentosPendentes' => $documentosPendentes,
+            'totalFuncionarios' => $funcionarios->count(),
+            'funcionariosDocumentacaoPendente' => $funcionariosDocumentacaoPendente,
         ]);
     })->name('dashboard');
 
