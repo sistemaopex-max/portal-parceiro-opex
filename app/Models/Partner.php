@@ -78,6 +78,11 @@ class Partner extends Model
         return $this->belongsTo(PartnerCategory::class, 'categoria_id');
     }
 
+    public function scopeAtivos($query)
+    {
+        return $query->where('ativo', true);
+    }
+
     public function documentosEmpresa(): HasMany
     {
         return $this->hasMany(DocumentoEmpresa::class, 'parceiro_id');
@@ -128,6 +133,27 @@ class Partner extends Model
     public function getCnpjFormatadoAttribute(): ?string
     {
         return self::formatarCnpj($this->cnpj);
+    }
+
+    public function getLocalFilialAttribute(): ?string
+    {
+        $local = implode('/', array_filter([
+            filled($this->cidade) ? $this->cidade : null,
+            filled($this->uf) ? strtoupper($this->uf) : null,
+        ]));
+
+        return $local !== '' ? $local : null;
+    }
+
+    public function getRotuloFilialAttribute(): string
+    {
+        $local = $this->local_filial;
+
+        if ($local !== null) {
+            return $local.' — '.$this->razao_social;
+        }
+
+        return $this->razao_social;
     }
 
     protected function setCnpjAttribute(?string $value): void

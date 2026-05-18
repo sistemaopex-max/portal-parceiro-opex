@@ -16,7 +16,7 @@
     </head>
     <body class="font-sans antialiased">
         <div
-            class="flex min-h-screen flex-col bg-zinc-50 text-gray-900 lg:flex-row"
+            class="min-h-screen bg-zinc-50 text-gray-900 lg:grid lg:grid-cols-[260px_minmax(0,1fr)]"
             x-data="{ sidebarOpen: false, partnersOpen: false }"
             @if (request()->routeIs('admin.parceiros.*', 'admin.categorias.*', 'admin.docs.*', 'admin.docs-func.*', 'admin.invitations.*') && auth()->check() && auth()->user()->isBackOffice())
                 x-init="partnersOpen = true"
@@ -41,7 +41,7 @@
 
             {{-- Sidebar --}}
             <aside
-                class="sidebar-gradient fixed inset-y-0 left-0 z-50 flex w-[260px] -translate-x-full flex-col shadow-2xl transition-transform duration-200 ease-out lg:static lg:z-0 lg:translate-x-0 lg:shrink-0 lg:shadow-none"
+                class="sidebar-gradient fixed inset-y-0 left-0 z-50 flex h-screen w-[260px] max-w-[85vw] -translate-x-full flex-col shadow-2xl transition-transform duration-200 ease-out lg:static lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:w-auto lg:max-w-none lg:translate-x-0 lg:shadow-none"
                 :class="{ 'translate-x-0': sidebarOpen }"
                 aria-label="Navegação lateral"
             >
@@ -49,7 +49,9 @@
             </aside>
 
             {{-- Conteúdo principal --}}
-            {{ $content }}
+            <div class="flex min-h-screen min-w-0 flex-col">
+                {{ $content }}
+            </div>
         </div>
     </body>
 </html>

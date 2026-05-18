@@ -33,9 +33,12 @@ class User extends Authenticatable
     {
         $id = session('current_partner_id');
 
-        return $this->partners()
+        $partner = $this->partners()
+            ->ativos()
             ->when($id, fn ($q) => $q->where('id', $id))
             ->first();
+
+        return $partner ?? $this->partners()->ativos()->orderBy('razao_social')->first();
     }
 
     public function isPartner(): bool

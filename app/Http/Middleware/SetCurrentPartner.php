@@ -18,10 +18,10 @@ class SetCurrentPartner
 
         $id = session('current_partner_id');
 
-        $valid = $id && $user->partners()->where('id', $id)->exists();
+        $valid = $id && $user->partners()->ativos()->where('id', $id)->exists();
 
         if (! $valid) {
-            $first = $user->partners()->first();
+            $first = $user->partners()->ativos()->orderBy('razao_social')->first();
 
             abort_if($first === null, 404);
 

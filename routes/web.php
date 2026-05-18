@@ -128,10 +128,15 @@ Route::middleware(['auth', 'verified', 'partner', 'set.current.partner'])->prefi
 
     // Documentos da empresa
     Route::get('docs', [EmpresaDocumentoController::class, 'index'])->name('docs.index');
+    // Documentos > Funcionários deve vir antes do wildcard {documento_empresa}
+    Route::get('docs/funcionarios', [FuncionarioController::class, 'docsIndex'])->name('docs.funcionarios');
     Route::post('docs/{documento_empresa}/upload', [EmpresaDocumentoController::class, 'upload'])->name('docs.upload');
     Route::get('docs/{documento_empresa}', [EmpresaDocumentoController::class, 'download'])->name('docs.download');
 
     Route::resource('funcionarios', FuncionarioController::class)->except(['show']);
+
+    // Inativar funcionário
+    Route::patch('funcionarios/{funcionario}/inativar', [FuncionarioController::class, 'inativar'])->name('funcionarios.inativar');
 
     // Documentos dos funcionários
     Route::get('funcionarios/{funcionario}/docs', [FuncionarioDocumentoController::class, 'index'])->name('funcionarios.docs.index');
@@ -145,9 +150,8 @@ Route::middleware(['auth', 'verified', 'partner', 'set.current.partner'])->prefi
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/perfil', [ProfileController::class, 'edit'])->name('perfil.edit');
+    Route::patch('/perfil', [ProfileController::class, 'update'])->name('perfil.update');
 });
 
 // Rota de visualização de arquivos — deve ficar por último para não conflitar

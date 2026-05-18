@@ -61,7 +61,10 @@ class FilialController extends Controller
             'cidade' => $validated['cidade'] ?? null,
             'uf' => $validated['uf'] ?? null,
             'slug' => $slug,
+            'ativo' => true,
         ]);
+
+        session(['current_partner_id' => $filial->id]);
 
         return redirect()
             ->route('parceiro.filiais.index')
@@ -103,9 +106,10 @@ class FilialController extends Controller
     public function switch(Partner $partner): RedirectResponse
     {
         abort_if($partner->user_id !== auth()->id(), 403);
+        abort_unless($partner->ativo, 403, 'Esta filial está desativada. Entre em contato com o administrador.');
 
         session(['current_partner_id' => $partner->id]);
 
-        return redirect()->back()->with('status', 'Filial ativa alterada para ' . $partner->razao_social . '.');
+        return redirect()->back()->with('status', 'Filial em uso: ' . $partner->razao_social . '.');
     }
 }

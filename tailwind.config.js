@@ -17,6 +17,7 @@ export default {
         'bg-marino/10', 'bg-marino/15', 'text-marino-dark', 'border-marino-dark',
         'hover:text-marino-dark', 'focus:border-marino-dark',
         'from-marino', 'to-marino-700',
+        'lg:grid-cols-[260px_minmax(0,1fr)]',
     ],
 
     theme: {

@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="mt-3 flex gap-1">
-        <a href="{{ route('profile.edit') }}" class="flex-1 rounded-lg px-2.5 py-1.5 text-center text-xs text-white/70 hover:bg-white/[0.08] hover:text-white transition" @click="sidebarOpen = false; partnersOpen = false">
+        <a href="{{ route('perfil.edit') }}" class="flex-1 rounded-lg px-2.5 py-1.5 text-center text-xs text-white/70 hover:bg-white/[0.08] hover:text-white transition" @click="sidebarOpen = false; partnersOpen = false">
             Perfil
         </a>
         <form method="POST" action="{{ route('logout') }}" class="flex-1">

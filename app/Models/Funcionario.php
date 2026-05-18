@@ -28,6 +28,7 @@ class Funcionario extends Model
         'cpf',
         'data_nascimento',
         'documentacao_em_dia',
+        'ativo',
     ];
 
     public function getRouteKeyName(): string
@@ -66,6 +67,7 @@ class Funcionario extends Model
         return [
             'data_nascimento' => 'date',
             'documentacao_em_dia' => 'boolean',
+            'ativo' => 'boolean',
         ];
     }
 
@@ -87,6 +89,40 @@ class Funcionario extends Model
     public static function normalizarCpf(string $cpf): string
     {
         return preg_replace('/\D/', '', $cpf) ?? '';
+    }
+
+    /**
+     * Status exibido na listagem de documentos do parceiro (Completa / Em análise / Faltam n).
+     *
+     * @return array{tipo: 'completa'|'analise'|'faltam', faltam: int}
+     */
+    public function statusDocumentacaoListagemParceiro(): array
+    {
+        $docs = $this->documentos->filter(
+            static fn (DocumentoFuncionario $d) => $d->tipo !== null && $d->tipo->ativo,
+        );
+
+        if ($docs->isEmpty() || $this->documentacao_em_dia) {
+            return ['tipo' => 'completa', 'faltam' => 0];
+        }
+
+        $temPendente = $docs->contains(
+            static fn (DocumentoFuncionario $d) => $d->status === StatusDocumento::Pendente,
+        );
+
+        if ($temPendente) {
+            return ['tipo' => 'analise', 'faltam' => 0];
+        }
+
+        $faltam = $docs->filter(
+            static fn (DocumentoFuncionario $d) => in_array(
+                $d->status,
+                [StatusDocumento::FaltandoDocumento, StatusDocumento::Invalido],
+                true,
+            ),
+        )->count();
+
+        return ['tipo' => 'faltam', 'faltam' => max(1, $faltam)];
     }
 
     public function refreshDocumentacaoEmDia(): void

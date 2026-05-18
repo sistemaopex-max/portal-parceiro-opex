@@ -25,11 +25,26 @@ class FuncionarioController extends Controller
         abort_if($partner === null, 404);
 
         $funcionarios = $partner->funcionarios()
-            ->with('funcao')
+            ->with(['funcao', 'documentos.tipo'])
+            ->orderBy('ativo', 'desc')
             ->orderBy('nome')
             ->paginate(15);
 
         return view('parceiro.funcionarios.index', compact('partner', 'funcionarios'));
+    }
+
+    public function docsIndex(): View
+    {
+        $partner = auth()->user()->currentPartner();
+        abort_if($partner === null, 404);
+
+        $funcionarios = $partner->funcionarios()
+            ->with(['funcao', 'documentos.tipo'])
+            ->where('ativo', true)
+            ->orderBy('nome')
+            ->paginate(20);
+
+        return view('parceiro.docs.funcionarios.index', compact('partner', 'funcionarios'));
     }
 
     public function create(): View
@@ -101,5 +116,17 @@ class FuncionarioController extends Controller
         return redirect()
             ->route('parceiro.funcionarios.index')
             ->with('status', 'Funcionário removido.');
+    }
+
+    public function inativar(Funcionario $funcionario): RedirectResponse
+    {
+        $partner = auth()->user()->currentPartner();
+        abort_if($partner === null || $funcionario->parceiro_id !== $partner->id, 403);
+
+        $funcionario->update(['ativo' => false]);
+
+        return redirect()
+            ->route('parceiro.funcionarios.index')
+            ->with('status', 'Funcionário inativado.');
     }
 }
